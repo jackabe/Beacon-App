@@ -3,7 +3,7 @@ package nsa.com.museum;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
-public class History extends AppCompatActivity {
+public class HistoryActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

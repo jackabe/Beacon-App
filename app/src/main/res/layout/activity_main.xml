@@ -7,40 +7,63 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
+    android:focusable="true"
+    android:focusableInTouchMode="true"
     tools:context="nsa.com.museum.MainActivity">
 
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Settings"
-        android:id="@+id/settingsbtn"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentEnd="true" />
+        android:id="@+id/settingsBtn"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true" />
 
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="History"
-        android:id="@+id/button"
-        android:layout_alignTop="@+id/settingsbtn"
+        android:text="Find Me"
+        android:id="@+id/findBtn"
+        android:layout_alignParentTop="true"
         android:layout_alignParentStart="true" />
 
     <EditText
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/editText"
-        android:text="Find Museums"
-        android:layout_alignBottom="@+id/settingsbtn"
+        android:id="@+id/editSearch"
+        android:hint="Find Museums"
         android:layout_centerHorizontal="true" />
 
-    <SearchView
-        android:id="@+id/searchBox"
+    <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:searchIcon="@android:drawable/ic_search_category_default"
-        tools:ignore="UnusedAttribute"
-        android:layout_below="@+id/editText"
+        android:text="Next"
+        android:id="@+id/nextBtn"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentStart="true" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="History"
+        android:id="@+id/historyBtn"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentEnd="true" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Search"
+        android:id="@+id/searchBtn"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true" />
+
+    <ListView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/museumsList"
+        android:layout_below="@+id/findBtn"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="30dp" />
+        android:layout_above="@+id/settingsBtn" />
 
 </RelativeLayout>

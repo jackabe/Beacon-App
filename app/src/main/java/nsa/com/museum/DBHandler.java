@@ -15,8 +15,8 @@ public class DBHandler extends SQLiteOpenHelper{
 
     private static final String TABLE_MUSEUM_DETAILS = "museumDetails";
 
-    private static final String MUSEUM_NAME = "museumName";
-    private static final int MUSEUM_ID = 1;
+    private static final String UUID = "beaconId";
+    private static final String ARTWORK_ID = "artworkId";
 
     public DBHandler(Context context) { super(context, DATABASE_NAME, null, DATABASE_VERSION); }
 
@@ -24,8 +24,9 @@ public class DBHandler extends SQLiteOpenHelper{
     public void onCreate(SQLiteDatabase db) {
 
         String CREATE_TABLE_MUSEUM_DETAILS = "CREATE TABLE" + TABLE_MUSEUM_DETAILS + "("
-                + MUSEUM_ID + " INTEGER PRIMARY KEY,"
-                + MUSEUM_NAME + " TEXT " + ")";
+                + ARTWORK_ID + " INTEGER PRIMARY KEY,"
+                + UUID + " INTEGER," + ")";
+
         db.execSQL(CREATE_TABLE_MUSEUM_DETAILS);
     }
 
@@ -36,5 +37,8 @@ public class DBHandler extends SQLiteOpenHelper{
 
         onCreate(db);
     }
+
+
+
 
 }

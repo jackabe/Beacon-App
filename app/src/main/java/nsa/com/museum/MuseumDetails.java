@@ -6,32 +6,33 @@ package nsa.com.museum;
 public class MuseumDetails {
 
     private int _id;
-    private String _museumName;
+    private int _artifactId;
+    private int _beaconId;
 
     public MuseumDetails() {
 
     }
 
-    public MuseumDetails(int _id, String _museumName) {
+    public MuseumDetails(int _id, int _artifactId, int _beaconId) {
         this._id = _id;
-        this._museumName = _museumName;
+        this._artifactId = _artifactId;
+        this._beaconId = _beaconId;
     }
 
-
-    public void setMuseumName(String _museumName) {
-        this._museumName = _museumName;
+    public void set_artifactId(int _artifactId) {
+        this._artifactId = _artifactId;
     }
 
-    public String getMuseumName() {
-        return _museumName;
+    public int getMuseumName() {
+        return _artifactId;
     }
 
-    public int getMuseumId() {
-        return _id;
+    public int get_beaconId() {
+        return _beaconId;
     }
 
-    public void setMuseumId(int museumId) {
-        this._id = museumId;
+    public void set_beaconId(int _beaconId) {
+        this._id = _beaconId;
     }
 
 }

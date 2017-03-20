@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.net.Uri;
 import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
@@ -67,6 +68,9 @@ public class BeaconActivity extends AppCompatActivity implements GCellBeaconMana
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 Toast.makeText(getApplicationContext(), beaconAdap.getItem(i).toString(), Toast.LENGTH_SHORT).show();
+                Intent return_uri = new Intent("android.intent.action.VIEW",
+                                Uri.parse("what do i put here???"));
+                startActivity(return_uri);
             }
         });
 

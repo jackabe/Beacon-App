@@ -24,6 +24,7 @@ public class MainActivity extends AppCompatActivity {
     Button settingsBtn;
     Button historyBtn;
     Button nextBtn;
+    Button findBtn;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,6 +41,7 @@ public class MainActivity extends AppCompatActivity {
         settingsBtn = (Button) findViewById(R.id.settingsBtn);
         historyBtn = (Button) findViewById(R.id.historyBtn);
         nextBtn = (Button) findViewById(R.id.nextBtn);
+        findBtn = (Button) findViewById(R.id.findBtn);
 
         searchBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -84,6 +86,14 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent i = new Intent(getApplicationContext(), BeaconActivity.class);
+                startActivity(i);
+            }
+        });
+
+        findBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent i = new Intent(getApplicationContext(), MapsActivity.class);
                 startActivity(i);
             }
         });

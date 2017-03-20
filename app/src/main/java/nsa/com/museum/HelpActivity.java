@@ -17,6 +17,7 @@ public class HelpActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
 
 
+
     }
 
 }

@@ -62,6 +62,7 @@ public class MainActivity extends AppCompatActivity {
         postcodeInput = (EditText) findViewById(R.id.editSearch);
         searchBtn = (Button)findViewById(R.id.searchBtn);
         museumsList = (ListView) findViewById(R.id.museumsList);
+        findBtn = (Button) findViewById(R.id.findBtn);
         searchBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

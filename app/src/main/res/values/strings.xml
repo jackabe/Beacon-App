@@ -13,11 +13,11 @@
     </string>
 
     <string name="pref_title_enable_mobiledata">Enbale Data Downloads</string>
-    <string name="pref_description_enable_mobiledata">Allow Information to be downloaded through Mobile data
+    <string name="pref_description_enable_mobiledata">Allow data to be downloaded through Mobile data
     </string>
 
-    <string name="pref_title_display_name">Display App Name</string>
-    <string name="pref_default_display_name">MyMuseum</string>
+    <string name="pref_title_display_name">Display name</string>
+    <string name="pref_default_display_name">John Smith</string>
 
     <string name="pref_title_add_friends_to_messages">Add friends to messages</string>
     <string-array name="pref_example_list_titles">
@@ -63,5 +63,8 @@
     <string name="pref_ringtone_silent">Silent</string>
 
     <string name="pref_title_vibrate">Vibrate</string>
-    <string name="title_activity_maps">Map</string>
+    <string name="title_activity_main">MainActivity</string>
+    <string name="action_settings">Settings</string>
+    <string name="section_format">Hello World from section: %1$d</string>
+    <string name="title_activity_help">HelpActivity</string>
 </resources>

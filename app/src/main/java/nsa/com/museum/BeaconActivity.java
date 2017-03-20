@@ -68,9 +68,12 @@ public class BeaconActivity extends AppCompatActivity implements GCellBeaconMana
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 Toast.makeText(getApplicationContext(), beaconAdap.getItem(i).toString(), Toast.LENGTH_SHORT).show();
-                Intent return_uri = new Intent("android.intent.action.VIEW",
-                                Uri.parse("what do i put here???"));
-                startActivity(return_uri);
+
+                if(beacontest.get(i) == "90090990800") {
+                    Uri x = Uri.parse("https://rhp.avoqr.eu/en/musicians");
+                    Intent launchBrowser = new Intent(Intent.ACTION_VIEW, x);
+                    startActivity(launchBrowser);
+                }
             }
         });
 

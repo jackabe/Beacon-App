@@ -2,6 +2,9 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="nsa.com.museum">
 
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
+    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.BLUETOOTH" />
     <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
@@ -33,9 +36,6 @@
             android:name=".BeaconActivity"
             android:label="Nearby Beacons" />
         <activity
-            android:name="nsa.com.museum.MapsActivity"
-            android:label="Your Location" />
-        <activity
             android:name=".NewSettingsActivity"
             android:label="@string/title_activity_new_settings"
             android:parentActivityName=".MainActivity">
@@ -47,6 +47,13 @@
             android:name=".HelpActivity"
             android:label="@string/title_activity_help"
             android:theme="@style/AppTheme.NoActionBar" />
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="@string/google_maps_key" />
+        <activity
+            android:name="MapsActivity"
+            android:label="Your Location"
+            android:parentActivityName=".MainActivity"/>
     </application>
 
 </manifest>

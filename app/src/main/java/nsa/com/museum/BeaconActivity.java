@@ -73,7 +73,13 @@ public class BeaconActivity extends AppCompatActivity implements GCellBeaconMana
                     Uri x = Uri.parse("https://rhp.avoqr.eu/en/musicians");
                     Intent launchBrowser = new Intent(Intent.ACTION_VIEW, x);
                     startActivity(launchBrowser);
+                } else if (beacontest.get(i) == "473474242446") {
+                    Uri x = Uri.parse("https://rhp.avoar.eu/en/majesty");
+                    Intent launchBrowser = new Intent(Intent.ACTION_VIEW, x);
+                    startActivity(launchBrowser);
+
                 }
+
             }
         });
 

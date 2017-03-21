@@ -1,5 +1,6 @@
 package nsa.com.museum;
 
+import android.content.Context;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -15,6 +16,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.content.Intent;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -68,7 +70,7 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
                 String postcode = postcodeInput.getText().toString();
                 if (postcode.length() < 6 ) {
-                    Toast error = Toast.makeText(getApplicationContext(), "Please enter a 6 character postcode", Toast.LENGTH_SHORT);
+                    Toast error = Toast.makeText(getApplicationContext(), "Please enter a valid postcode", Toast.LENGTH_SHORT);
                     error.show();
                 }
                 else {
@@ -82,6 +84,11 @@ public class MainActivity extends AppCompatActivity {
                     museumsList.setAdapter(adapter);
                     adapter.notifyDataSetChanged();
                     ((EditText)findViewById(R.id.editSearch)).setText(" ");
+                    InputMethodManager inputManager = (InputMethodManager)
+                            getSystemService(Context.INPUT_METHOD_SERVICE);
+
+                    inputManager.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(),
+                            InputMethodManager.HIDE_NOT_ALWAYS);
                 }
             }
         });

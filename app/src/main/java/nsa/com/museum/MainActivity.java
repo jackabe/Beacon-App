@@ -1,7 +1,12 @@
 package nsa.com.museum;
 
+import android.Manifest;
 import android.content.Context;
+import android.content.pm.PackageManager;
+import android.os.Build;
+import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 
@@ -24,20 +29,23 @@ import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Toast;
 import java.util.ArrayList;
+import java.util.List;
 
 import android.widget.TextView;
 
-public class MainActivity extends AppCompatActivity {
+import com.gcell.ibeacon.gcellbeaconscanlibrary.GCellBeaconManagerScanEvents;
+import com.gcell.ibeacon.gcellbeaconscanlibrary.GCellBeaconRegion;
+import com.gcell.ibeacon.gcellbeaconscanlibrary.GCellBeaconScanManager;
+import com.gcell.ibeacon.gcellbeaconscanlibrary.GCelliBeacon;
 
-    /**
-     * The {@link android.support.v4.view.PagerAdapter} that will provide
-     * fragments for each of the sections. We use a
-     * {@link FragmentPagerAdapter} derivative, which will keep every
-     * loaded fragment in memory. If this becomes too memory intensive, it
-     * may be best to switch to a
-     * {@link android.support.v4.app.FragmentStatePagerAdapter}.
-     */
-    private SectionsPagerAdapter mSectionsPagerAdapter;
+public class MainActivity extends AppCompatActivity implements GCellBeaconManagerScanEvents {
+
+    GCellBeaconScanManager scanMan;
+    ListView lv;
+    ArrayAdapter beaconAdap;
+    ArrayList <String> beacontest = new ArrayList<>();
+    ArrayList <String> historyBeacons = new ArrayList<>();
+
 
     ArrayList<String> museums = new ArrayList<String>();
     ArrayAdapter<String> adapter;
@@ -49,7 +57,9 @@ public class MainActivity extends AppCompatActivity {
     /**
      * The {@link ViewPager} that will host the section contents.
      */
-    private ViewPager mViewPager;
+
+    int PERM_CODE = 101;
+    String[] permissions = new String[]{Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.BLUETOOTH, Manifest.permission.BLUETOOTH_ADMIN};
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,6 +70,19 @@ public class MainActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         // Create the adapter that will return a fragment for each of the three
         // primary sections of the activity.
+
+        checkPermissions();
+
+        //Create adapter for beacons
+        beaconAdap = new ArrayAdapter(getApplicationContext(), android.R.layout.simple_list_item_1, beacontest);
+
+        //Create a manager with the application context
+        scanMan = new GCellBeaconScanManager(this);
+        scanMan.enableBlueToothAutoSwitchOn(true);
+
+
+        //Start a scan
+        scanMan.startScanningForBeacons();
 
         postcodeInput = (EditText) findViewById(R.id.editSearch);
         searchBtn = (Button)findViewById(R.id.searchBtn);
@@ -110,22 +133,6 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
-
-        // Set up the ViewPager with the sections adapter.
-//        mViewPager = (ViewPager) findViewById(R.id.container);
-//        mViewPager.setAdapter(mSectionsPagerAdapter);
-
-
-//        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-//        fab.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-//                        .setAction("Action", null).show();
-//            }
-//        });
-
     }
 
     @Override
@@ -160,79 +167,106 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    /**
-     * A placeholder fragment containing a simple view.
-     */
-    public static class PlaceholderFragment extends Fragment {
-        /**
-         * The fragment argument representing the section number for this
-         * fragment.
-         */
-        private static final String ARG_SECTION_NUMBER = "section_number";
+    @Override
+    public void onGCellUpdateBeaconList(List<GCelliBeacon> list) {
+        for (GCelliBeacon beacon : list) {
+            if(beaconAdap.getPosition(beacon.getProxUuid().getStringFormattedUuid()) == -1) {
 
-        public PlaceholderFragment() {
-        }
-
-        /**
-         * Returns a new instance of this fragment for the given section
-         * number.
-         */
-        public static PlaceholderFragment newInstance(int sectionNumber) {
-            PlaceholderFragment fragment = new PlaceholderFragment();
-            Bundle args = new Bundle();
-            args.putInt(ARG_SECTION_NUMBER, sectionNumber);
-            fragment.setArguments(args);
-            return fragment;
-        }
-
-        @Override
-        public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                                 Bundle savedInstanceState) {
-            View rootView = inflater.inflate(R.layout.fragment_main, container, false);
-            TextView textView = (TextView) rootView.findViewById(R.id.section_label);
-            textView.setText(getString(R.string.section_format, getArguments().getInt(ARG_SECTION_NUMBER)));
-            return rootView;
-        }
-    }
-
-    /**
-     * A {@link FragmentPagerAdapter} that returns a fragment corresponding to
-     * one of the sections/tabs/pages.
-     */
-    public class SectionsPagerAdapter extends FragmentPagerAdapter {
-
-        public SectionsPagerAdapter(FragmentManager fm) {
-            super(fm);
-        }
-
-        @Override
-        public Fragment getItem(int position) {
-            // getItem is called to instantiate the fragment for the given page.
-            // Return a PlaceholderFragment (defined as a static inner class below).
-            return PlaceholderFragment.newInstance(position + 1);
-        }
-
-        @Override
-        public int getCount() {
-            // Show 3 total pages.
-            return 3;
-        }
-
-        @Override
-        public CharSequence getPageTitle(int position) {
-            switch (position) {
-                case 0:
-                    return "SECTION 1";
-                case 1:
-                    return "SECTION 2";
-                case 2:
-                    return "SECTION 3";
+                beaconAdap.add(beacon.getProxUuid().getStringFormattedUuid());
             }
-            return null;
         }
+    }
 
+    /**
+     * Ignore ALL of the methods below
+     * @param gCellBeaconRegion
+     */
+
+    @Override
+    public void didEnterBeaconRegion(GCellBeaconRegion gCellBeaconRegion) {
 
     }
 
+    @Override
+    public void didExitBeaconRegion(GCellBeaconRegion gCellBeaconRegion) {
+
+    }
+
+    @Override
+    public void didRangeBeaconsinRegion(GCellBeaconRegion gCellBeaconRegion, List<GCelliBeacon> list) {
+
+    }
+
+    @Override
+    public void bleNotSupported() {
+
+    }
+
+    @Override
+    public void bleNotEnabled() {
+
+    }
+
+    @Override
+    public void locationPermissionsDenied() {
+
+    }
+
+    public void checkPermissions() {
+        //Request permission if ANY permissions have been denied
+        if(android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && !hasPermissions(getApplicationContext(), permissions)) {
+            ActivityCompat.requestPermissions(this, permissions, PERM_CODE);
+        }
+    }
+
+    /**
+     * Iterate through all permissions provided and ensure all have been approved
+     * @param context
+     * @param permissions
+     * @return
+     */
+    public boolean hasPermissions(Context context, String... permissions) {
+        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && context != null && permissions != null) {
+            for (String permission : permissions) {
+                if (ActivityCompat.checkSelfPermission(context, permission) != PackageManager.PERMISSION_GRANTED) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
+    /**
+     * Called when the user has dealt with the permissions box and we are told if they granted or denied access
+     * @param requestCode
+     * @param permissions
+     * @param grantResults
+     */
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        switch (requestCode) {
+            case 1001: {
+                /**
+                 * In order to not bother users, we should only be asking for permissions when they perform actions that require it.
+                 * So, asking for 10 permissions each time an app starts is bad practice.
+                 * We should ask for each when they do something that requires (such as disabling wifi or taking a picture)
+                 */
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+
+                } else {
+                    // permission denied, boo! Disable the
+                    // functionality that depends on this permission.
+                    finish();
+                }
+                return;
+            }
+        }
+    }
 }
+
+
+
+
+
 

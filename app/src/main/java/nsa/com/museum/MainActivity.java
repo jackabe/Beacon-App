@@ -1,14 +1,18 @@
 package nsa.com.museum;
 
 import android.Manifest;
+import android.app.PendingIntent;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
+import android.app.Notification;
+import android.app.NotificationManager;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.support.v4.app.NotificationCompat;
 
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -45,6 +49,7 @@ public class MainActivity extends AppCompatActivity implements GCellBeaconManage
     ArrayAdapter beaconAdap;
     ArrayList <String> beacontest = new ArrayList<>();
     ArrayList <String> historyBeacons = new ArrayList<>();
+    int dID;
 
 
     ArrayList<String> museums = new ArrayList<String>();
@@ -66,6 +71,7 @@ public class MainActivity extends AppCompatActivity implements GCellBeaconManage
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        dID = 101;
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         // Create the adapter that will return a fragment for each of the three
@@ -135,6 +141,31 @@ public class MainActivity extends AppCompatActivity implements GCellBeaconManage
 
     }
 
+    public static void createNotification(Context ctx, boolean dismiss, int id, String text) {
+        NotificationCompat.Builder notifBuilder = new NotificationCompat.Builder(ctx);
+        // You can look at other attributes to set but these three MUST be set in order to build
+        notifBuilder.setSmallIcon(R.mipmap.ic_launcher).setContentTitle(ctx.getString(R.string.beacons_title)).setContentText(text);
+        //We could pass in whether it was actually dismissable and remove the need for an if statement
+        notifBuilder.setOngoing(!dismiss);
+        //Create an action for when the intent is clicked (just opening this activity)
+        Intent resultIntent = new Intent(ctx, MainActivity.class);
+        PendingIntent resultPendingIntent =
+                PendingIntent.getActivity(
+                        ctx,
+                        0,
+                        resultIntent,
+                        PendingIntent.FLAG_UPDATE_CURRENT
+                );
+        notifBuilder.setContentIntent(resultPendingIntent);
+        NotificationManager mNotificationManager = (NotificationManager) ctx.getSystemService(Context.NOTIFICATION_SERVICE);
+        mNotificationManager.notify(id, notifBuilder.build());
+    }
+    //TODO 3 add a click listener to the dismiss button to hide any notification that is showing
+    public void dismissNotification(int id) {
+        NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+        mNotificationManager.cancel(id);
+    }
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
@@ -173,6 +204,7 @@ public class MainActivity extends AppCompatActivity implements GCellBeaconManage
             if(beaconAdap.getPosition(beacon.getProxUuid().getStringFormattedUuid()) == -1) {
 
                 beaconAdap.add(beacon.getProxUuid().getStringFormattedUuid());
+                createNotification(getApplicationContext(), true, dID, list.size() + "Beacons Found");
             }
         }
     }

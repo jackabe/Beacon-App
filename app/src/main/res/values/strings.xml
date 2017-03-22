@@ -12,6 +12,9 @@
     <string name="pref_description_switch_language">Switch Language from English to Welsh
     </string>
 
+    <string name="beacons_text">Hey! There are beacons nearby!</string>
+    <string name="beacons_title">Beacon Notification</string>
+
     <string name="pref_title_enable_mobiledata">Enbale Data Downloads</string>
     <string name="pref_description_enable_mobiledata">Allow data to be downloaded through Mobile data
     </string>

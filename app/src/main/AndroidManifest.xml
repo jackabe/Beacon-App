@@ -9,10 +9,6 @@
     <uses-permission android:name="android.permission.BLUETOOTH" />
     <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
 
-    <!-- To auto-complete the email text field in the login form with the user's emails -->
-    <uses-permission android:name="android.permission.GET_ACCOUNTS" />
-    <uses-permission android:name="android.permission.READ_PROFILE" />
-    <uses-permission android:name="android.permission.READ_CONTACTS" />
 
     <application
         android:allowBackup="true"
@@ -67,7 +63,11 @@
         <activity
             android:name=".AdminLogin"
             android:label="@string/title_activity_admin_login" />
-        <activity android:name=".AdminActivity"></activity>
+
+        <activity android:name=".AdminActivity"
+            android:label="@string/AdminActivity"
+            android:theme="@style/AppTheme.NoActionBar" />
+
     </application>
 
 </manifest>

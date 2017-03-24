@@ -12,7 +12,10 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -32,8 +35,8 @@ public class BeaconActivity extends AppCompatActivity implements GCellBeaconMana
     GCellBeaconScanManager scanMan;
     ListView lv;
     ArrayAdapter beaconAdap;
-    ArrayList <String> beacontest = new ArrayList<>();
-    ArrayList <String> historyBeacons = new ArrayList<>();
+    ArrayList<String> beacontest = new ArrayList<>();
+    ArrayList<String> historyBeacons = new ArrayList<>();
 
     int PERM_CODE = 101;
     String[] permissions = new String[]{Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.BLUETOOTH, Manifest.permission.BLUETOOTH_ADMIN};
@@ -45,6 +48,9 @@ public class BeaconActivity extends AppCompatActivity implements GCellBeaconMana
         lv = (ListView) findViewById(R.id.beaconsLv);
         //Handle Permissions
         checkPermissions();
+
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
 
         //Create adapter for beacons
         beaconAdap = new ArrayAdapter(getApplicationContext(), android.R.layout.simple_list_item_1, beacontest);
@@ -69,7 +75,7 @@ public class BeaconActivity extends AppCompatActivity implements GCellBeaconMana
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 Toast.makeText(getApplicationContext(), beaconAdap.getItem(i).toString(), Toast.LENGTH_SHORT).show();
 
-                if(beacontest.get(i) == "90090990800") {
+                if (beacontest.get(i) == "90090990800") {
                     Uri x = Uri.parse("https://rhp.avoqr.eu/en/musicians");
                     Intent launchBrowser = new Intent(Intent.ACTION_VIEW, x);
                     startActivity(launchBrowser);
@@ -93,7 +99,7 @@ public class BeaconActivity extends AppCompatActivity implements GCellBeaconMana
                     public void onClick(DialogInterface dialog, int which) {
                         switch (which) {
                             case 0:
-                                Toast.makeText(getApplicationContext(),item + " Added to history", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(getApplicationContext(), item + " Added to history", Toast.LENGTH_SHORT).show();
                                 historyBeacons.add(item);
                                 Intent intent = new Intent(getBaseContext(), HistoryActivity.class);
                                 intent.putStringArrayListExtra("beacons", historyBeacons);
@@ -117,7 +123,7 @@ public class BeaconActivity extends AppCompatActivity implements GCellBeaconMana
     @Override
     public void onGCellUpdateBeaconList(List<GCelliBeacon> list) {
         for (GCelliBeacon beacon : list) {
-            if(beaconAdap.getPosition(beacon.getProxUuid().getStringFormattedUuid()) == -1) {
+            if (beaconAdap.getPosition(beacon.getProxUuid().getStringFormattedUuid()) == -1) {
 
                 beaconAdap.add(beacon.getProxUuid().getStringFormattedUuid());
             }
@@ -126,6 +132,7 @@ public class BeaconActivity extends AppCompatActivity implements GCellBeaconMana
 
     /**
      * Ignore ALL of the methods below
+     *
      * @param gCellBeaconRegion
      */
 
@@ -161,13 +168,14 @@ public class BeaconActivity extends AppCompatActivity implements GCellBeaconMana
 
     public void checkPermissions() {
         //Request permission if ANY permissions have been denied
-        if(android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && !hasPermissions(getApplicationContext(), permissions)) {
+        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && !hasPermissions(getApplicationContext(), permissions)) {
             ActivityCompat.requestPermissions(this, permissions, PERM_CODE);
         }
     }
 
     /**
      * Iterate through all permissions provided and ensure all have been approved
+     *
      * @param context
      * @param permissions
      * @return
@@ -185,6 +193,7 @@ public class BeaconActivity extends AppCompatActivity implements GCellBeaconMana
 
     /**
      * Called when the user has dealt with the permissions box and we are told if they granted or denied access
+     *
      * @param requestCode
      * @param permissions
      * @param grantResults
@@ -208,6 +217,37 @@ public class BeaconActivity extends AppCompatActivity implements GCellBeaconMana
                 }
                 return;
             }
+        }
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.menu_main, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
+        switch (item.getItemId()) {
+            case R.id.action_settings:
+                Intent settings = new Intent(getApplicationContext(), NewSettingsActivity.class);
+                startActivity(settings);
+                return true;
+
+            case R.id.action_help:
+                Intent help = new Intent(getApplicationContext(), HelpActivity.class);
+                startActivity(help);
+                return true;
+
+            default:
+                // If we got here, the user's action was not recognized.
+                // Invoke the superclass to handle it.
+                return super.onOptionsItemSelected(item);
+
         }
     }
 }

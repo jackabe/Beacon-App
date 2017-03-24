@@ -45,7 +45,6 @@ import com.gcell.ibeacon.gcellbeaconscanlibrary.GCelliBeacon;
 public class MainActivity extends AppCompatActivity implements GCellBeaconManagerScanEvents {
 
     GCellBeaconScanManager scanMan;
-    ListView lv;
     ArrayAdapter beaconAdap;
     ArrayList <String> beacontest = new ArrayList<>();
     ArrayList <String> historyBeacons = new ArrayList<>();
@@ -72,6 +71,34 @@ public class MainActivity extends AppCompatActivity implements GCellBeaconManage
         setContentView(R.layout.activity_main);
 
         dID = 101;
+        ListView list;
+
+        String[] itemname ={
+                "London",
+                "Manchester",
+                "Cardiff",
+                "Newport",
+                "Lincoln",
+                "Birmingham",
+                "Newent",
+                "Leeds"
+        };
+
+        Integer[] imgid={
+                R.mipmap.icon,
+                R.mipmap.icon,
+                R.mipmap.icon,
+                R.mipmap.icon,
+                R.mipmap.icon,
+                R.mipmap.icon,
+                R.mipmap.icon,
+                R.mipmap.icon,
+        };
+
+        final CustomListAdapter adapter=new CustomListAdapter(this, itemname, imgid);
+        list=(ListView)findViewById(R.id.museumsList);
+        list.setAdapter(adapter);
+
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         // Create the adapter that will return a fragment for each of the three
@@ -80,7 +107,7 @@ public class MainActivity extends AppCompatActivity implements GCellBeaconManage
         checkPermissions();
 
         //Create adapter for beacons
-        beaconAdap = new ArrayAdapter(getApplicationContext(), android.R.layout.simple_list_item_1, beacontest);
+        beaconAdap = new ArrayAdapter(getApplicationContext(), R.layout.list_row, beacontest);
 
         //Create a manager with the application context
         scanMan = new GCellBeaconScanManager(this);
@@ -105,13 +132,7 @@ public class MainActivity extends AppCompatActivity implements GCellBeaconManage
                 else {
                     Toast nearYou = Toast.makeText(getApplicationContext(), "Loaded Museums near you", Toast.LENGTH_SHORT);
                     nearYou.show();
-                    museums.add("Cardiff");
-                    museums.add("Newport");
-                    museums.add("Birmingham");
-                    museums.add("London");
-                    adapter = new ArrayAdapter<String>(MainActivity.this, android.R.layout.simple_list_item_1, museums);
                     museumsList.setAdapter(adapter);
-                    adapter.notifyDataSetChanged();
                     ((EditText)findViewById(R.id.editSearch)).setText(" ");
                     InputMethodManager inputManager = (InputMethodManager)
                             getSystemService(Context.INPUT_METHOD_SERVICE);
@@ -121,6 +142,8 @@ public class MainActivity extends AppCompatActivity implements GCellBeaconManage
                 }
             }
         });
+
+
 
         museumsList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -138,6 +161,8 @@ public class MainActivity extends AppCompatActivity implements GCellBeaconManage
                 startActivity(i);
             }
         });
+
+
 
     }
 
@@ -204,9 +229,11 @@ public class MainActivity extends AppCompatActivity implements GCellBeaconManage
             if(beaconAdap.getPosition(beacon.getProxUuid().getStringFormattedUuid()) == -1) {
 
                 beaconAdap.add(beacon.getProxUuid().getStringFormattedUuid());
-                createNotification(getApplicationContext(), true, dID, list.size() + "Beacons Found");
+                createNotification(getApplicationContext(), true, dID, getString(R.string.beacons_text) + "" + list.size() + "" + (R.string.beacons_text_2));
+
             }
         }
+
     }
 
     /**

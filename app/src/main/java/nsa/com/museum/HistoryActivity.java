@@ -56,6 +56,11 @@ public class HistoryActivity extends AppCompatActivity {
                 startActivity(help);
                 return true;
 
+            case R.id.action_login:
+                Intent login = new Intent(getApplicationContext(), AdminLogin.class);
+                startActivity(login);
+                return true;
+
             default:
                 // If we got here, the user's action was not recognized.
                 // Invoke the superclass to handle it.

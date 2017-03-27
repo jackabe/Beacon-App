@@ -4,6 +4,8 @@ import android.Manifest;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.pm.PackageManager;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
@@ -19,6 +21,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -46,21 +49,16 @@ public class MainActivity extends AppCompatActivity implements GCellBeaconManage
 
     GCellBeaconScanManager scanMan;
     ArrayAdapter beaconAdap;
-    ArrayList <String> beacontest = new ArrayList<>();
-    ArrayList <String> historyBeacons = new ArrayList<>();
     int dID;
+    DBConnector db;
 
 
-    ArrayList<String> museums = new ArrayList<String>();
-    ArrayAdapter<String> adapter;
     EditText postcodeInput;
     ListView museumsList;
     Button searchBtn;
     Button findBtn;
+    CustomListAdapter listAdapter;
 
-    /**
-     * The {@link ViewPager} that will host the section contents.
-     */
 
     int PERM_CODE = 101;
     String[] permissions = new String[]{Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.BLUETOOTH, Manifest.permission.BLUETOOTH_ADMIN};
@@ -69,58 +67,31 @@ public class MainActivity extends AppCompatActivity implements GCellBeaconManage
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-        dID = 101;
-        ListView list;
-
-        String[] itemname ={
-                "London",
-                "Manchester",
-                "Cardiff",
-                "Newport",
-                "Lincoln",
-                "Birmingham",
-                "Newent",
-                "Leeds"
-        };
-
-        Integer[] imgid={
-                R.mipmap.icon,
-                R.mipmap.icon,
-                R.mipmap.icon,
-                R.mipmap.icon,
-                R.mipmap.icon,
-                R.mipmap.icon,
-                R.mipmap.icon,
-                R.mipmap.icon,
-        };
-
-        final CustomListAdapter adapter=new CustomListAdapter(this, itemname, imgid);
-        list=(ListView)findViewById(R.id.museumsList);
-        list.setAdapter(adapter);
-
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        // Create the adapter that will return a fragment for each of the three
-        // primary sections of the activity.
 
-        checkPermissions();
+        beaconAdap = new ArrayAdapter<>(getApplicationContext(),android.R.layout.simple_list_item_1);
 
-        //Create adapter for beacons
-        beaconAdap = new ArrayAdapter(getApplicationContext(), R.layout.list_row, beacontest);
+        db = new DBConnector(this);
+        //TODO check location does not exist
+        String query = "INSERT INTO museumDetails(museumCity, museumOpen, museumClose) values ('"
+                + "London" + "','" + 8 + "','" + 1800 + "')";
+        db.executeQuery(query);
 
-        //Create a manager with the application context
-        scanMan = new GCellBeaconScanManager(this);
-        scanMan.enableBlueToothAutoSwitchOn(true);
-
-
-        //Start a scan
-        scanMan.startScanningForBeacons();
 
         postcodeInput = (EditText) findViewById(R.id.editSearch);
         searchBtn = (Button)findViewById(R.id.searchBtn);
         museumsList = (ListView) findViewById(R.id.museumsList);
         findBtn = (Button) findViewById(R.id.findBtn);
+
+        dID = 101;
+        showList();
+        checkPermissions();
+
+        scanMan = new GCellBeaconScanManager(this);
+        scanMan.enableBlueToothAutoSwitchOn(true);
+        scanMan.startScanningForBeacons();
+
         searchBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -132,7 +103,7 @@ public class MainActivity extends AppCompatActivity implements GCellBeaconManage
                 else {
                     Toast nearYou = Toast.makeText(getApplicationContext(), "Loaded Museums near you", Toast.LENGTH_SHORT);
                     nearYou.show();
-                    museumsList.setAdapter(adapter);
+                    museumsList.setAdapter(listAdapter);
                     ((EditText)findViewById(R.id.editSearch)).setText(" ");
                     InputMethodManager inputManager = (InputMethodManager)
                             getSystemService(Context.INPUT_METHOD_SERVICE);
@@ -144,11 +115,10 @@ public class MainActivity extends AppCompatActivity implements GCellBeaconManage
         });
 
 
-
         museumsList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                Toast.makeText(getApplicationContext(), "Loaded: " + adapter.getItem(i).toString(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(getApplicationContext(), "Loaded: " + listAdapter.getItem(i).toString(), Toast.LENGTH_SHORT).show();
                 Intent beacons = new Intent(getApplicationContext(), BeaconActivity.class);
                 startActivity(beacons);
             }
@@ -163,6 +133,39 @@ public class MainActivity extends AppCompatActivity implements GCellBeaconManage
         });
 
 
+    }
+
+    private void showList() {
+
+        ArrayList<Museums> museumsArrayList = new ArrayList<>();
+        museumsArrayList.clear();
+        String query = "SELECT * FROM museumDetails ";
+        Cursor c1 = db.selectQuery(query);
+        if (c1 != null && c1.getCount() != 0) {
+            if (c1.moveToFirst()) {
+                Log.i("DB", c1.getInt(c1.getColumnIndex("museumOpen")) + "");
+                do {
+                    Museums museumListItems = new Museums();
+
+                    museumListItems.setMuseumId(c1.getInt(c1
+                            .getColumnIndex("museumId")));
+                    museumListItems.setMuseumCity(c1.getString(c1
+                            .getColumnIndex("museumCity")));
+//                    museumListItems.setMuseumOpen(c1.getInt(c1
+//                            .getColumnIndex("museumOpen")));
+                    museumListItems.setMuseumClose(c1.getInt(c1
+                            .getColumnIndex("museumClose")));
+
+                    museumsArrayList.add(museumListItems);
+
+                } while (c1.moveToNext());
+            }
+        }
+        c1.close();
+
+        CustomListAdapter listAdapter = new CustomListAdapter(
+                MainActivity.this, museumsArrayList);
+        museumsList.setAdapter(listAdapter);
 
     }
 

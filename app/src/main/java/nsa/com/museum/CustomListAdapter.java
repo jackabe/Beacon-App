@@ -52,11 +52,10 @@ public class CustomListAdapter extends BaseAdapter {
         TextView museumName = (TextView) convertView.findViewById(R.id.title);
         museumName.setText(contactListItems.getMuseumCity());
         TextView museumOpen = (TextView) convertView.findViewById(R.id.open);
-        museumOpen.setText("");
-//                contactListItems.getMuseumOpen());
+        museumOpen.setText("Opens at: " + contactListItems.getMuseumOpen());
         TextView museumClose = (TextView) convertView.findViewById(R.id.close);
-        museumClose.setText("");
-//                contactListItems.getMuseumClose());
+        museumClose.setText("Closes at: " + contactListItems.getMuseumClose());
+
         ImageView image = (ImageView) convertView.findViewById(R.id.icon);
         image.setImageResource(R.mipmap.icon);
 

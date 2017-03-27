@@ -75,7 +75,7 @@ public class MainActivity extends AppCompatActivity implements GCellBeaconManage
         db = new DBConnector(this);
         //TODO check location does not exist
         String query = "INSERT INTO museumDetails(museumCity, museumOpen, museumClose) values ('"
-                + "London" + "','" + 8 + "','" + 1800 + "')";
+                + "London" + "','" + 9 + "','" + 1800 + "')";
         db.executeQuery(query);
 
 
@@ -144,15 +144,17 @@ public class MainActivity extends AppCompatActivity implements GCellBeaconManage
         if (c1 != null && c1.getCount() != 0) {
             if (c1.moveToFirst()) {
                 Log.i("DB", c1.getInt(c1.getColumnIndex("museumOpen")) + "");
+
+                Log.i("DB", c1.getColumnCount() + "");
+
+
                 do {
                     Museums museumListItems = new Museums();
 
-                    museumListItems.setMuseumId(c1.getInt(c1
-                            .getColumnIndex("museumId")));
                     museumListItems.setMuseumCity(c1.getString(c1
                             .getColumnIndex("museumCity")));
-//                    museumListItems.setMuseumOpen(c1.getInt(c1
-//                            .getColumnIndex("museumOpen")));
+                    museumListItems.setMuseumOpen(c1.getInt(c1
+                            .getColumnIndex("museumOpen")));
                     museumListItems.setMuseumClose(c1.getInt(c1
                             .getColumnIndex("museumClose")));
 

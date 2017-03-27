@@ -135,5 +135,13 @@
         android:layout_alignBottom="@+id/addName"
         android:layout_alignParentEnd="true" />
 
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Delete"
+        android:id="@+id/deleteMuseum"
+        android:layout_below="@+id/addMuseum"
+        android:layout_alignStart="@+id/addMuseum" />
+
 
 </RelativeLayout>

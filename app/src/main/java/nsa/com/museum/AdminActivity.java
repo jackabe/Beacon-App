@@ -30,6 +30,7 @@ public class AdminActivity extends AppCompatActivity {
     EditText addOpen;
     EditText addClose;
     Button addMuseum;
+    Button deleteMuseum;
 
     EditText addId;
     EditText addName;
@@ -56,6 +57,7 @@ public class AdminActivity extends AppCompatActivity {
         addOpen = (EditText) findViewById(R.id.addOpen);
         addClose = (EditText) findViewById(R.id.addClose);
         addMuseum = (Button) findViewById(R.id.addMuseum);
+        deleteMuseum = (Button) findViewById(R.id.deleteMuseum);
 
         addId = (EditText) findViewById(R.id.addId);
         addName = (EditText) findViewById(R.id.addName);
@@ -70,12 +72,24 @@ public class AdminActivity extends AppCompatActivity {
                 city = addCity.getText().toString();
                 open = addOpen.getText().toString();
                 close = addClose.getText().toString();
-                String query = "INSERT INTO museumDetails(museumCity, openTime, closeTime) values ('"
+                String query = "INSERT INTO museumDetails(museumCity, museumOpen, museumClose) values ('"
                         + city + "','" + open + "','" + close + "')";
                 db.executeQuery(query);
                 addCity.setText("");
                 addOpen.setText("");
                 addClose.setText("");
+                Toast.makeText(getApplicationContext(), city + " added to database", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        deleteMuseum.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                city = addCity.getText().toString();
+                String delQuery = "DELETE FROM museumDetails WHERE museumCity='"+city+"' ";
+                db.executeQuery(delQuery);
+                addCity.setText("");
+                Toast.makeText(getApplicationContext(), city + " deleted from database", Toast.LENGTH_SHORT).show();
             }
         });
 

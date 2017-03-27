@@ -92,32 +92,32 @@
     <EditText
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/editText4"
+        android:id="@+id/addLink"
         android:hint="Link"
-        android:layout_below="@+id/editText6"
-        android:layout_alignStart="@+id/editText6"
-        android:layout_alignEnd="@+id/editText6"
-        android:text="addLink" />
+        android:layout_below="@+id/addName"
+        android:layout_alignStart="@+id/addName"
+        android:layout_alignEnd="@+id/addName"
+        android:text="Link" />
 
     <EditText
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/editText5"
+        android:id="@+id/addId"
         android:hint="Beacon ID"
         android:layout_below="@+id/textView9"
         android:layout_alignEnd="@+id/textView9"
-        android:layout_alignStart="@+id/editText6"
-        android:text="addId" />
+        android:layout_alignStart="@+id/addName"
+        android:text="Id" />
 
     <EditText
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/editText6"
+        android:id="@+id/addName"
         android:hint="Object Name"
-        android:layout_below="@+id/editText5"
+        android:layout_below="@+id/addId"
         android:singleLine="true"
         android:layout_alignRight="@+id/textView9"
-        android:text="addName" />
+        android:text="Name:" />
 
     <Button
         android:layout_width="wrap_content"
@@ -132,7 +132,7 @@
         android:layout_height="wrap_content"
         android:text="Add"
         android:id="@+id/addBeacon"
-        android:layout_alignBottom="@+id/editText6"
+        android:layout_alignBottom="@+id/addName"
         android:layout_alignParentEnd="true" />
 
 

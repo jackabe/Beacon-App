@@ -1,49 +1,64 @@
 package nsa.com.museum;
 
+import java.util.ArrayList;
 
-import android.app.Activity;
+import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
+import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-public class CustomListAdapter extends ArrayAdapter<String> {
+public class CustomListAdapter extends BaseAdapter {
 
-    private final Activity context;
-    private final String[] itemname;
-    private final Integer[] imgid;
-    private String museumState;
+    Context context;
+    ArrayList<Museums> contactList;
 
-    public CustomListAdapter(Activity context, String[] itemname, Integer[] imgid) {
-        super(context, R.layout.list_row, itemname);
-        // TODO Auto-generated constructor stub
+    public CustomListAdapter(Context context, ArrayList<Museums> list) {
 
-        this.context=context;
-        this.itemname=itemname;
-        this.imgid=imgid;
+        this.context = context;
+        contactList = list;
     }
 
-    public String getMuseumState() {
-        museumState = "Open";
-        return museumState;
+    @Override
+    public int getCount() {
+
+        return contactList.size();
     }
 
-    public View getView(int position,View view,ViewGroup parent) {
-        LayoutInflater inflater=context.getLayoutInflater();
-        View rowView=inflater.inflate(R.layout.list_row, null,true);
+    @Override
+    public Object getItem(int position) {
 
-        TextView txtTitle = (TextView) rowView.findViewById(R.id.item);
-        ImageView imageView = (ImageView) rowView.findViewById(R.id.icon);
-        TextView extratxt = (TextView) rowView.findViewById(R.id.textView1);
-
-        txtTitle.setText(itemname[position]);
-        imageView.setImageResource(imgid[position]);
-        extratxt.setText("Description "+getMuseumState());
-        return rowView;
-
+        return contactList.get(position);
     }
 
-//    extratxt.setText("Description "+itemname[position]);
+    @Override
+    public long getItemId(int position) {
+
+        return position;
+    }
+
+    @Override
+    public View getView(int position, View convertView, ViewGroup arg2) {
+        Museums contactListItems = contactList.get(position);
+
+        if (convertView == null) {
+            LayoutInflater inflater = (LayoutInflater) context
+                    .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+            convertView = inflater.inflate(R.layout.list_row, null);
+
+        }
+        TextView museumName = (TextView) convertView.findViewById(R.id.title);
+        museumName.setText(contactListItems.getMuseumCity());
+        TextView museumOpen = (TextView) convertView.findViewById(R.id.open);
+        museumOpen.setText(contactListItems.getMuseumOpen());
+        TextView museumClose = (TextView) convertView.findViewById(R.id.close);
+        museumClose.setText(contactListItems.getMuseumClose());
+        ImageView image = (ImageView) convertView.findViewById(R.id.icon);
+        image.setImageResource(R.mipmap.icon);
+
+        return convertView;
+    }
+
 }

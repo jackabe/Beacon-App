@@ -144,7 +144,10 @@ public class MainActivity extends AppCompatActivity implements GCellBeaconManage
         if (c1 != null && c1.getCount() != 0) {
             if (c1.moveToFirst()) {
                 Log.i("DB", c1.getInt(c1.getColumnIndex("museumOpen")) + "");
+
                 Log.i("DB", c1.getColumnCount() + "");
+
+
                 do {
                     Museums museumListItems = new Museums();
 

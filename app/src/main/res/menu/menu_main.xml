@@ -6,12 +6,19 @@
     <item
         android:id="@+id/action_help"
         android:icon="@mipmap/ic_announcement_white_24dp"
-        android:title="Help"
+        android:title="@string/action_help"
         app:showAsAction="ifRoom"/>
 
     <item
         android:id="@+id/action_settings"
         android:orderInCategory="100"
         android:title="@string/action_settings"
+        app:showAsAction="never" />
+
+    <item
+        android:id="@+id/action_login"
+        android:orderInCategory="101"
+        android:title="@string/action_login"
+        android:icon="@drawable/login"
         app:showAsAction="never" />
 </menu>

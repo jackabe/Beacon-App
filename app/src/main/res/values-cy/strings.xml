@@ -6,9 +6,12 @@
     <string name="search_btn">Chwilio</string>
     <string name="findme_btn">Dod o hyd i Me</string>
 
+    <!-- help page strings -->
 
-
-
+    <string name="help_title">HELPU</string>
+    <string name="help_p1">Rhowch eich cod post a daro chwilio i ddod o hyd i amgueddfeydd cyfagos. NEU defnyddiwch y botwm ddod o hyd i mi</string>
+    <string name="help_p2">Cliciwch ar leoliad a rhestr o eitemau yr ydych yn gyfagos fydd yn llwytho i fyny. Cliciwch ar un i ddysgu mwy am y peth, neu yn cynnal dosbarthiadau cliciwch i ychwanegu eich hanes.</string>
+    <string name="help_foot">MWYNHEWCH Y APP</string>
 
     <!-- Strings related to Settings -->
 

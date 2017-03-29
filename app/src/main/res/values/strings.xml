@@ -12,9 +12,10 @@
     <string name="pref_description_switch_language">Switch Language from English to Welsh
     </string>
 
+    <string name="click_me">Click on me to check them out! </string>
     <string name="beacons_text">Hey! You are near </string>
     <string name="beacons_text_2">Beacons</string>
-    <string name="beacons_title">Beacon Notification</string>
+    <string name="beacons_title">There are beacons near you!</string>
 
     <string name="historyLabel">Your History</string>
     <string name="beaconsLabel">Beacons Nearby</string>
@@ -87,6 +88,9 @@
     <string name="section_format">Hello World from section: %1$d</string>
     <string name="title_activity_help">HelpActivity</string>
     <string name="title_activity_admin_login">Admin Sign in</string>
+    <string name="hold">Hold click on me..</string>
+    <string name="empty">Please enter a valid museum name..</string>
+
 
     <!-- Strings related to login -->
     <string name="prompt_email">Email</string>

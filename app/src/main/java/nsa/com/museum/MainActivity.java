@@ -4,6 +4,8 @@ import android.Manifest;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.pm.PackageManager;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
@@ -11,6 +13,7 @@ import android.app.Notification;
 import android.app.NotificationManager;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.support.v4.app.NotificationCompat;
 
@@ -19,6 +22,9 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -46,21 +52,22 @@ public class MainActivity extends AppCompatActivity implements GCellBeaconManage
 
     GCellBeaconScanManager scanMan;
     ArrayAdapter beaconAdap;
-    ArrayList <String> beacontest = new ArrayList<>();
-    ArrayList <String> historyBeacons = new ArrayList<>();
     int dID;
-
-
-    ArrayList<String> museums = new ArrayList<String>();
-    ArrayAdapter<String> adapter;
-    EditText postcodeInput;
+    DBConnector db;
+    EditText cityInput;
     ListView museumsList;
     Button searchBtn;
     Button findBtn;
+    CustomListAdapter listAdapter;
+    ArrayList<Museums> museumsArrayList;
+    Museums museumListItems;
+    CustomBeaconAdapter beaconAdapter;
+    ArrayList<Beacons> beaconsArrayList;
+    Beacons beaconsListItems;
+    String aBeacon;
+    ArrayList<String> beacons;
+//    SearchView view;
 
-    /**
-     * The {@link ViewPager} that will host the section contents.
-     */
 
     int PERM_CODE = 101;
     String[] permissions = new String[]{Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.BLUETOOTH, Manifest.permission.BLUETOOTH_ADMIN};
@@ -69,71 +76,109 @@ public class MainActivity extends AppCompatActivity implements GCellBeaconManage
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-        dID = 101;
-        ListView list;
-
-        String[] itemname ={
-                "London",
-                "Manchester",
-                "Cardiff",
-                "Newport",
-                "Lincoln",
-                "Birmingham",
-                "Newent",
-                "Leeds"
-        };
-
-        Integer[] imgid={
-                R.mipmap.icon,
-                R.mipmap.icon,
-                R.mipmap.icon,
-                R.mipmap.icon,
-                R.mipmap.icon,
-                R.mipmap.icon,
-                R.mipmap.icon,
-                R.mipmap.icon,
-        };
-
-        final CustomListAdapter adapter=new CustomListAdapter(this, itemname, imgid);
-        list=(ListView)findViewById(R.id.museumsList);
-        list.setAdapter(adapter);
-
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        // Create the adapter that will return a fragment for each of the three
-        // primary sections of the activity.
 
-        checkPermissions();
-
-        //Create adapter for beacons
-        beaconAdap = new ArrayAdapter(getApplicationContext(), R.layout.list_row, beacontest);
-
-        //Create a manager with the application context
-        scanMan = new GCellBeaconScanManager(this);
-        scanMan.enableBlueToothAutoSwitchOn(true);
-
-
-        //Start a scan
-        scanMan.startScanningForBeacons();
-
-        postcodeInput = (EditText) findViewById(R.id.editSearch);
+//        view = (SearchView) findViewById(R.id.hello);
+        cityInput = (EditText) findViewById(R.id.editSearch);
         searchBtn = (Button)findViewById(R.id.searchBtn);
         museumsList = (ListView) findViewById(R.id.museumsList);
         findBtn = (Button) findViewById(R.id.findBtn);
+        beaconAdap = new ArrayAdapter<>(getApplicationContext(),android.R.layout.simple_list_item_1);
+        db = new DBConnector(this);
+        scanMan = new GCellBeaconScanManager(this);
+        scanMan.enableBlueToothAutoSwitchOn(true);
+        scanMan.startScanningForBeacons();
+        dID = 101;
+        beaconsArrayList = new ArrayList<>();
+        beacons = new ArrayList<>();
+
+        checkPermissions();
+
+        museumsArrayList = new ArrayList<>();
+        museumsArrayList.clear();
+        final String query = "SELECT * FROM museumDetails ";
+        Cursor c1 = db.selectQuery(query);
+        if (c1 != null && c1.getCount() != 0) {
+            if (c1.moveToFirst()) {
+                Log.i("DB", c1.getInt(c1.getColumnIndex("museumOpen")) + "");
+
+            Log.i("DB", c1.getColumnCount() + "");
+
+                do {
+                    museumListItems = new Museums();
+
+                    museumListItems.setMuseumCity(c1.getString(c1
+                            .getColumnIndex("museumCity")));
+                    museumListItems.setMuseumOpen(c1.getInt(c1
+                            .getColumnIndex("museumOpen")));
+                    museumListItems.setMuseumClose(c1.getInt(c1
+                            .getColumnIndex("museumClose")));
+
+                    museumsArrayList.add(museumListItems);
+
+                } while (c1.moveToNext());
+            }
+        }
+        c1.close();
+
+        listAdapter = new CustomListAdapter(
+                MainActivity.this, museumsArrayList);
+        museumsList.setAdapter(listAdapter);
+
+//        cityInput.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+//            @Override
+//            public boolean onQueryTextSubmit(String query) {
+//                return false;
+//            }
+//
+//            @Override
+//            public boolean onQueryTextChange(String newText) {
+//                listAdapter.getFilter().filter(query);
+//                return false;
+//            }
+//        });
+
         searchBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String postcode = postcodeInput.getText().toString();
-                if (postcode.length() < 6 ) {
-                    Toast error = Toast.makeText(getApplicationContext(), "Please enter a valid postcode", Toast.LENGTH_SHORT);
-                    error.show();
-                }
-                else {
-                    Toast nearYou = Toast.makeText(getApplicationContext(), "Loaded Museums near you", Toast.LENGTH_SHORT);
-                    nearYou.show();
-                    museumsList.setAdapter(adapter);
-                    ((EditText)findViewById(R.id.editSearch)).setText(" ");
+                String city = cityInput.getText().toString();
+                if (city.contains("")) {
+                    Toast.makeText(getApplicationContext(), getString(R.string.empty), Toast.LENGTH_SHORT).show();
+                } else {
+                    String firstLetter = city.substring(0, 1).toUpperCase();
+                    String restLetters = city.substring(1).toLowerCase();
+                    String capitalisedCity = firstLetter + restLetters;
+                    museumsArrayList.clear();
+                    museumsArrayList = new ArrayList<>();
+                    final String query = "SELECT * FROM museumDetails WHERE museumCity='" + capitalisedCity + "' ";
+                    Cursor c1 = db.selectQuery(query);
+                    if (c1 != null && c1.getCount() != 0) {
+                        if (c1.moveToFirst()) {
+
+                            do {
+                                museumListItems = new Museums();
+
+                                museumListItems.setMuseumCity(c1.getString(c1
+                                        .getColumnIndex("museumCity")));
+                                museumListItems.setMuseumOpen(c1.getInt(c1
+                                        .getColumnIndex("museumOpen")));
+                                museumListItems.setMuseumClose(c1.getInt(c1
+                                        .getColumnIndex("museumClose")));
+
+                                museumsArrayList.add(museumListItems);
+
+                            } while (c1.moveToNext());
+                        }
+                    }
+                    c1.close();
+
+                    listAdapter = new CustomListAdapter(
+                            MainActivity.this, museumsArrayList);
+                    museumsList.setAdapter(listAdapter);
+
+
+                    ((EditText) findViewById(R.id.editSearch)).setText(" ");
                     InputMethodManager inputManager = (InputMethodManager)
                             getSystemService(Context.INPUT_METHOD_SERVICE);
 
@@ -144,16 +189,6 @@ public class MainActivity extends AppCompatActivity implements GCellBeaconManage
         });
 
 
-
-        museumsList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                Toast.makeText(getApplicationContext(), "Loaded: " + adapter.getItem(i).toString(), Toast.LENGTH_SHORT).show();
-                Intent beacons = new Intent(getApplicationContext(), BeaconActivity.class);
-                startActivity(beacons);
-            }
-        });
-
         findBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -161,19 +196,16 @@ public class MainActivity extends AppCompatActivity implements GCellBeaconManage
                 startActivity(i);
             }
         });
-
-
-
     }
 
-    public static void createNotification(Context ctx, boolean dismiss, int id, String text) {
+    public static void createNotification(Context ctx, boolean dismiss, int id) {
         NotificationCompat.Builder notifBuilder = new NotificationCompat.Builder(ctx);
         // You can look at other attributes to set but these three MUST be set in order to build
-        notifBuilder.setSmallIcon(R.mipmap.ic_launcher).setContentTitle(ctx.getString(R.string.beacons_title)).setContentText(text);
-        //We could pass in whether it was actually dismissable and remove the need for an if statement
+        notifBuilder.setSmallIcon(R.mipmap.icon_inverted).setContentTitle(ctx.getString(R.string.beacons_title)).setContentText(ctx.getString(R.string.click_me));
+        //We could pass in whether it was actually dismissable and remove the need for an if
         notifBuilder.setOngoing(!dismiss);
         //Create an action for when the intent is clicked (just opening this activity)
-        Intent resultIntent = new Intent(ctx, MainActivity.class);
+        Intent resultIntent = new Intent(ctx, BeaconActivity.class);
         PendingIntent resultPendingIntent =
                 PendingIntent.getActivity(
                         ctx,
@@ -227,18 +259,17 @@ public class MainActivity extends AppCompatActivity implements GCellBeaconManage
         }
 
     }
-
     @Override
     public void onGCellUpdateBeaconList(List<GCelliBeacon> list) {
+        createNotification(getApplicationContext(), true, dID);
         for (GCelliBeacon beacon : list) {
-            if(beaconAdap.getPosition(beacon.getProxUuid().getStringFormattedUuid()) == -1) {
-
-                beaconAdap.add(beacon.getProxUuid().getStringFormattedUuid());
-                createNotification(getApplicationContext(), true, dID, getString(R.string.beacons_text) + "" + list.size() + "" + (R.string.beacons_text_2));
-
+            String theBeacon = beacon.getProxUuid().getStringFormattedUuid();
+            if (theBeacon.contains("")) {
+                Log.i("BeaconError", "No beacons to be found");
+            } else {
+//                createNotification(getApplicationContext(), true, dID, getString(R.string.click_me));
             }
         }
-
     }
 
     /**

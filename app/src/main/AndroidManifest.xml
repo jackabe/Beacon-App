@@ -19,6 +19,7 @@
         android:windowSoftInputMode="stateHidden">
         <activity
             android:name=".MainActivity"
+            android:actionViewClass="android.support.v7.widget.SearchView"
             android:label="MyMuseum App"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>

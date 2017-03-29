@@ -1,49 +1,122 @@
 package nsa.com.museum;
 
+import java.util.ArrayList;
+import java.util.List;
 
-import android.app.Activity;
+import android.content.Context;
+import android.content.Intent;
+import android.provider.SyncStateContract;
+import android.support.design.widget.Snackbar;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
+import android.widget.BaseAdapter;
+import android.widget.Filter;
+import android.widget.Filterable;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
-public class CustomListAdapter extends ArrayAdapter<String> {
+public class CustomListAdapter extends BaseAdapter implements Filterable {
 
-    private final Activity context;
-    private final String[] itemname;
-    private final Integer[] imgid;
-    private String museumState;
+    Context context;
+    ArrayList<Museums> contactList;
+    ArrayList<Museums> filterList;
+    CustomFilter filter;
 
-    public CustomListAdapter(Activity context, String[] itemname, Integer[] imgid) {
-        super(context, R.layout.list_row, itemname);
-        // TODO Auto-generated constructor stub
+    public CustomListAdapter(Context context, ArrayList<Museums> list) {
 
-        this.context=context;
-        this.itemname=itemname;
-        this.imgid=imgid;
+        this.context = context;
+        contactList = list;
+        this.filterList = contactList;
     }
 
-    public String getMuseumState() {
-        museumState = "Open";
-        return museumState;
+    @Override
+    public int getCount() {
+
+        return contactList.size();
     }
 
-    public View getView(int position,View view,ViewGroup parent) {
-        LayoutInflater inflater=context.getLayoutInflater();
-        View rowView=inflater.inflate(R.layout.list_row, null,true);
+    @Override
+    public Object getItem(int position) {
 
-        TextView txtTitle = (TextView) rowView.findViewById(R.id.item);
-        ImageView imageView = (ImageView) rowView.findViewById(R.id.icon);
-        TextView extratxt = (TextView) rowView.findViewById(R.id.textView1);
-
-        txtTitle.setText(itemname[position]);
-        imageView.setImageResource(imgid[position]);
-        extratxt.setText("Description "+getMuseumState());
-        return rowView;
-
+        return contactList.get(position);
     }
 
-//    extratxt.setText("Description "+itemname[position]);
+    @Override
+    public long getItemId(int position) {
+
+        return position;
+    }
+
+    @Override
+    public View getView(int position, View convertView, ViewGroup arg2) {
+        Museums contactListItems = contactList.get(position);
+
+        if (convertView == null) {
+            LayoutInflater inflater = (LayoutInflater) context
+                    .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+            convertView = inflater.inflate(R.layout.list_row, null);
+
+        }
+        final TextView museumName = (TextView) convertView.findViewById(R.id.title);
+        museumName.setText(contactListItems.getMuseumCity());
+        TextView museumOpen = (TextView) convertView.findViewById(R.id.open);
+        TextView museumClose = (TextView) convertView.findViewById(R.id.close);
+        museumOpen.setText("Opens at: " + contactListItems.getMuseumOpen());
+        museumClose.setText("Closes at: " + contactListItems.getMuseumClose());
+        ImageView image = (ImageView) convertView.findViewById(R.id.icon);
+        image.setImageResource(R.mipmap.icon);
+
+        convertView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent beacons = new Intent(context, BeaconActivity.class);
+                context.startActivity(beacons);
+                Toast.makeText(context, museumName.getText().toString() + " museum loaded!", Toast.LENGTH_SHORT).show();
+            }
+        });
+        return convertView;
+    }
+
+    @Override
+    public Filter getFilter() {
+        if (filter == null) {
+            filter = new CustomFilter();
+        }
+        return filter;
+    }
+
+    class CustomFilter extends Filter {
+
+        @Override
+        protected FilterResults performFiltering(CharSequence constraint) {
+            FilterResults results = new FilterResults();
+
+            if (constraint != null && constraint.length() > 0) {
+                constraint = constraint.toString().toUpperCase();
+                ArrayList<Museums> filters = new ArrayList<Museums>();
+                for (int i =0; i<filterList.size(); i++) {
+                    if(filterList.get(i).getMuseumCity().toUpperCase().contains(constraint)) {
+                        Museums museum = contactList.get(i);
+                        filters.add(museum);
+                    }
+                }
+                results.count = filterList.size();
+                results.values = filterList;
+            }
+            return results;
+        }
+
+        @Override
+        protected void publishResults(CharSequence constraint, FilterResults results) {
+            contactList = (ArrayList<Museums>) results.values;
+            notifyDataSetChanged();
+
+        }
+    }
+
+
+
 }

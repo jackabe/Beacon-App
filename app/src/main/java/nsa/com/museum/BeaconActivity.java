@@ -1,10 +1,10 @@
 package nsa.com.museum;
-
 import android.Manifest;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.database.Cursor;
 import android.net.Uri;
 import android.os.Build;
 import android.support.annotation.NonNull;
@@ -20,159 +20,205 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
-
 import com.gcell.ibeacon.gcellbeaconscanlibrary.GCellBeaconManagerScanEvents;
 import com.gcell.ibeacon.gcellbeaconscanlibrary.GCellBeaconRegion;
 import com.gcell.ibeacon.gcellbeaconscanlibrary.GCellBeaconScanManager;
 import com.gcell.ibeacon.gcellbeaconscanlibrary.GCelliBeacon;
 
+import org.w3c.dom.Text;
+
 import java.util.ArrayList;
 import java.util.List;
-
 public class BeaconActivity extends AppCompatActivity implements GCellBeaconManagerScanEvents {
 
     GCellBeaconScanManager scanMan;
-    ListView lv;
-    ArrayAdapter beaconAdap;
-    ArrayList<String> beacontest = new ArrayList<>();
     ArrayList<String> historyBeacons = new ArrayList<>();
+    DBBeacon db;
+
+    CustomBeaconAdapter beaconAdapter;
+    ArrayList<Beacons> beaconsArrayList;
+    Beacons beaconsListItems;
+    ListView lv;
+    String aBeacon;
+    ArrayList<String> beacons;
 
     int PERM_CODE = 101;
     String[] permissions = new String[]{Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.BLUETOOTH, Manifest.permission.BLUETOOTH_ADMIN};
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_beacon);
-        lv = (ListView) findViewById(R.id.beaconsLv);
-        //Handle Permissions
-        checkPermissions();
-
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        checkPermissions();
 
-        //Create adapter for beacons
-        beaconAdap = new ArrayAdapter(getApplicationContext(), android.R.layout.simple_list_item_1, beacontest);
+        lv = (ListView) findViewById(R.id.beaconsLv);
+        beaconsArrayList = new ArrayList<>();
+        db = new DBBeacon(this);
+        beacons = new ArrayList<>();
 
-        lv.setAdapter(beaconAdap);
-
-        // Simulating beacons in the LV for when working outside away from NSA
-        beacontest.add("6466346446223");
-        beacontest.add("90090990800");
-        beacontest.add("473474242446");
-        beaconAdap.notifyDataSetChanged();
-
-        //Create a manager with the application context
         scanMan = new GCellBeaconScanManager(this);
         scanMan.enableBlueToothAutoSwitchOn(true);
-
-        //Start a scan
         scanMan.startScanningForBeacons();
 
-        lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                Toast.makeText(getApplicationContext(), beaconAdap.getItem(i).toString(), Toast.LENGTH_SHORT).show();
-
-                if (beacontest.get(i) == "90090990800") {
-                    Uri x = Uri.parse("https://rhp.avoqr.eu/en/musicians");
-                    Intent launchBrowser = new Intent(Intent.ACTION_VIEW, x);
-                    startActivity(launchBrowser);
-                } else if (beacontest.get(i) == "473474242446") {
-                    Uri x = Uri.parse("http://rhp.avoqr.eu/en/majesty");
-                    Intent launchBrowser = new Intent(Intent.ACTION_VIEW, x);
-                    startActivity(launchBrowser);
-
-                }
-
-            }
-        });
-
-        lv.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
-            @Override
-            public boolean onItemLongClick(AdapterView<?> arg0, View view, int i, long l) {
-                AlertDialog.Builder builder = new AlertDialog.Builder(BeaconActivity.this);
-                builder.setTitle("Options");
-                final String item = beaconAdap.getItem(i).toString();
-                builder.setItems(new String[]{"Add to history", "Cancel"}, new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int which) {
-                        switch (which) {
-                            case 0:
-                                Toast.makeText(getApplicationContext(), item + " Added to history", Toast.LENGTH_SHORT).show();
-                                historyBeacons.add(item);
-                                Intent intent = new Intent(getBaseContext(), HistoryActivity.class);
-                                intent.putStringArrayListExtra("beacons", historyBeacons);
-                                beaconAdap.notifyDataSetChanged();
-                                startActivity(intent);
-                                break;
-                            case 1:
-
-                                break;
-
-                        }
-                    }
-                });
-                builder.show();
-                return false;
-            }
-        });
     }
 
 
     @Override
     public void onGCellUpdateBeaconList(List<GCelliBeacon> list) {
-        for (GCelliBeacon beacon : list) {
-            if (beaconAdap.getPosition(beacon.getProxUuid().getStringFormattedUuid()) == -1) {
+        String myId = "3FC5BB15-5FAF-4505-BDC8-A49DD6C19A45";
 
-                beaconAdap.add(beacon.getProxUuid().getStringFormattedUuid());
+        // lETS CHECK IF IT THE ID IS ALREADY IN THE DATABASE BEFORE WE ADD IT
+
+        String checkIfIn = "SELECT beaconId FROM beaconDetails WHERE beaconId='" + myId + "' ";
+        Cursor c2 = db.selectQuery(checkIfIn);
+
+        if (c2.getCount() == 0) {
+            Log.i("NotIn", "not in database" + "");
+            String query = "INSERT INTO beaconDetails(beaconId, objectName, url) values ('"
+                    + "3FC5BB15-5FAF-4505-BDC8-A49DD6C19A45" + "','" + "The Beatles" + "','" + "www.beatles.co.uk" + "')";
+            db.executeQuery(query);
+            c2.close();
+        }
+
+        else {
+
+            String check = "SELECT * FROM beaconDetails WHERE beaconId='" + myId + "' ";
+            Cursor c1 = db.selectQuery(check);
+            if (c1 != null && c1.getCount() != 0) {
+                if (c1.moveToFirst()) {
+                    do {
+
+                        beaconsArrayList.clear();
+                        beaconsListItems = new Beacons();
+                        beaconsListItems.setBeaconId(c1.getString(c1
+                                .getColumnIndex("beaconId")));
+                        beaconsListItems.setObjectName(c1.getString(c1
+                                .getColumnIndex("objectName")));
+                        beaconsListItems.setUrl(c1.getString(c1
+                                .getColumnIndex("url")));
+
+                        beaconsArrayList.add(beaconsListItems);
+
+                    } while (c1.moveToNext());
+                }
+                beaconAdapter = new CustomBeaconAdapter(
+                        BeaconActivity.this, beaconsArrayList);
+                lv.setAdapter(beaconAdapter);
             }
         }
     }
+
+//        if (c2 != null && c2.getCount() != 0) {
+//            if (c2.moveToFirst()) {
+//                do {
+//                    beaconsListItems = new Beacons();
+//                    beaconsListItems.setBeaconId(c2.getString(c2
+//                            .getColumnIndex("beaconId")));
+//                    idinDatabase = beaconsListItems.getBeaconId();
+//
+//                } while (c2.moveToNext());
+//            }
+//        }
+//
+//        if (myId.contains(idinDatabase)) {
+//
+//        }
+
+
+//        for (GCelliBeacon beacon : list) {
+//
+//            String theBeacon = beacon.getProxUuid().getStringFormattedUuid();
+//
+//            if (!beacons.contains(theBeacon)) {
+//                aBeacon = theBeacon;
+//                beacons.add(aBeacon);
+//                Log.i("BeaconAddedToList", "Beacon added to list" + "");
+//            } else if (beacons.contains(theBeacon)) {
+//                aBeacon = theBeacon;
+//            }
+//
+//            String check = "SELECT * FROM beaconDetails WHERE beaconId='" + aBeacon + "' ";
+//            Log.i("BeaconAddedToList", check + "");
+//            Cursor c1 = db.selectQuery(check);
+////            Log.i("null", aBeacon + "");
+//            if (c1 != null && c1.getCount() != 0) {
+//                Log.i("null", "helloooo" + "");
+//                if (c1.moveToFirst()) {
+//                    do {
+//                        beaconsListItems = new Beacons();
+//                        beaconsListItems.setBeaconId(c1.getString(c1
+//                                .getColumnIndex("beaconsId")));
+//                        beaconId = beaconsListItems.getBeaconId();
+//                        Log.i("BeaconAddedToList", beaconId + "");
+//                     } while (c1.moveToNext());
+//
+//                        if (aBeacon.contains(beaconId)) {
+//                            beaconsArrayList = new ArrayList<>();
+//                            beaconsArrayList.clear();
+//                            String query = "SELECT * FROM beaconDetails WHERE beaconId='" + aBeacon + "' ";
+//                            Cursor c2 = db.selectQuery(query);
+//                            if (c2 != null && c2.getCount() != 0) {
+//                                if (c2.moveToFirst()) {
+//                                    do {
+//                                        beaconsListItems = new Beacons();
+////                                        Log.i("BeaconAddedToList", "heloooo" + "");
+//
+//                                        beaconsListItems.setBeaconId(c1.getString(c1
+//                                                .getColumnIndex("beaconsId")));
+//                                        beaconsListItems.setObjectName(c1.getString(c1
+//                                                .getColumnIndex("objectName")));
+//                                        beaconsListItems.setUrl(c1.getString(c1
+//                                                .getColumnIndex("url")));
+//
+//                                        beaconsArrayList.add(beaconsListItems);
+//
+//                                    } while (c1.moveToNext());
+//                                }
+//                            }
+//
+//                            c2.close();
+//                        }
+//                    beaconAdapter = new CustomBeaconAdapter(
+//                            BeaconActivity.this, beaconsArrayList);
+//                    lv.setAdapter(beaconAdapter);
+//                }
+//                }
+//            }
+
 
     /**
      * Ignore ALL of the methods below
      *
      * @param gCellBeaconRegion
      */
-
     @Override
     public void didEnterBeaconRegion(GCellBeaconRegion gCellBeaconRegion) {
-
     }
-
     @Override
     public void didExitBeaconRegion(GCellBeaconRegion gCellBeaconRegion) {
-
     }
-
     @Override
     public void didRangeBeaconsinRegion(GCellBeaconRegion gCellBeaconRegion, List<GCelliBeacon> list) {
-
     }
-
     @Override
     public void bleNotSupported() {
-
     }
-
     @Override
     public void bleNotEnabled() {
-
     }
-
     @Override
     public void locationPermissionsDenied() {
-
     }
-
     public void checkPermissions() {
         //Request permission if ANY permissions have been denied
         if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && !hasPermissions(getApplicationContext(), permissions)) {
             ActivityCompat.requestPermissions(this, permissions, PERM_CODE);
         }
     }
-
     /**
      * Iterate through all permissions provided and ensure all have been approved
      *
@@ -190,7 +236,6 @@ public class BeaconActivity extends AppCompatActivity implements GCellBeaconMana
         }
         return true;
     }
-
     /**
      * Called when the user has dealt with the permissions box and we are told if they granted or denied access
      *
@@ -209,7 +254,6 @@ public class BeaconActivity extends AppCompatActivity implements GCellBeaconMana
                  * We should ask for each when they do something that requires (such as disabling wifi or taking a picture)
                  */
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-
                 } else {
                     // permission denied, boo! Disable the
                     // functionality that depends on this permission.
@@ -219,14 +263,12 @@ public class BeaconActivity extends AppCompatActivity implements GCellBeaconMana
             }
         }
     }
-
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_main, menu);
         return true;
     }
-
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle action bar item clicks here. The action bar will
@@ -237,22 +279,18 @@ public class BeaconActivity extends AppCompatActivity implements GCellBeaconMana
                 Intent settings = new Intent(getApplicationContext(), NewSettingsActivity.class);
                 startActivity(settings);
                 return true;
-
             case R.id.action_help:
                 Intent help = new Intent(getApplicationContext(), HelpActivity.class);
                 startActivity(help);
                 return true;
-
             case R.id.action_login:
                 Intent login = new Intent(getApplicationContext(), AdminLogin.class);
                 startActivity(login);
                 return true;
-
             default:
                 // If we got here, the user's action was not recognized.
                 // Invoke the superclass to handle it.
                 return super.onOptionsItemSelected(item);
-
         }
     }
 }

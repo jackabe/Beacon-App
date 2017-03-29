@@ -39,7 +39,7 @@ public class ItemsDBHelper extends SQLiteOpenHelper{
     private static final String CREATE_BEACON_DATABASE = "create table "
             + TABLE_BEACON_DETAILS + " (" + BEACON_ID
             + " text primary key, " + OBJECT_NAME
-            + " text not null, " + WEBSITE_URL + " text not null);";
+            + " text not null, " + WEBSITE_URL + " text not null, " + OBJECT_IMAGE + " blob not null);";
 
     public ItemsDBHelper(Context context, String name, SQLiteDatabase.CursorFactory factory, int version) {
 

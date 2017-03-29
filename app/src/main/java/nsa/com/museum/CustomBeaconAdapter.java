@@ -7,6 +7,8 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.provider.SyncStateContract;
 import android.util.Log;
@@ -67,19 +69,24 @@ public class CustomBeaconAdapter extends BaseAdapter implements Filterable {
         final TextView objectName = (TextView) convertView.findViewById(R.id.name);
         objectName.setText(contactListItems.getObjectName());
 
+
+        Bitmap bmp = BitmapFactory.decodeByteArray(contactListItems.getImage(), 0, contactListItems.getImage().length);
         ImageView image = (ImageView) convertView.findViewById(R.id.objectIcon);
-        image.setImageResource(R.drawable.beatles);
+        image.setImageBitmap(bmp);
+
+
+//        image.setImageBitmap(Bitmap.createScaledBitmap(bmp, 200, 100, false));
 
         convertView.setOnClickListener(new View.OnClickListener() {
-           @Override
-           public void onClick(View v) {
+            @Override
+            public void onClick(View v) {
 
-               Toast.makeText(context, objectName.getText().toString() + " loaded!", Toast.LENGTH_SHORT).show();
-               Uri url = Uri.parse("https://" + contactListItems.getUrl().toString());
-               Intent intent = new Intent(Intent.ACTION_VIEW, url);
-               context.startActivity(intent);
-           }
-       });
+                Toast.makeText(context, objectName.getText().toString() + " loaded!", Toast.LENGTH_SHORT).show();
+                Uri url = Uri.parse("https://" + contactListItems.getUrl().toString());
+                Intent intent = new Intent(Intent.ACTION_VIEW, url);
+                context.startActivity(intent);
+            }
+        });
 
 
         convertView.setOnLongClickListener(new View.OnLongClickListener() {

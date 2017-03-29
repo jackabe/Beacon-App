@@ -5,6 +5,8 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Build;
 import android.support.annotation.NonNull;
@@ -29,6 +31,7 @@ import com.gcell.ibeacon.gcellbeaconscanlibrary.GCelliBeacon;
 
 import org.w3c.dom.Text;
 
+import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 import java.util.List;
 public class BeaconActivity extends AppCompatActivity implements GCellBeaconManagerScanEvents {
@@ -70,16 +73,24 @@ public class BeaconActivity extends AppCompatActivity implements GCellBeaconMana
     @Override
     public void onGCellUpdateBeaconList(List<GCelliBeacon> list) {
         String myId = "3FC5BB15-5FAF-4505-BDC8-A49DD6C19A45";
+        Bitmap bmp = BitmapFactory.decodeResource(getResources(), R.drawable.beatles);
+        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+        bmp.compress(Bitmap.CompressFormat.JPEG, 70, stream);
+        byte[] image = stream.toByteArray();
 
         // lETS CHECK IF IT THE ID IS ALREADY IN THE DATABASE BEFORE WE ADD IT
+//
+//        String delQuery = "DELETE FROM beaconDetails WHERE beaconId='"+myId+"' ";
+//        db.executeQuery(delQuery);
 
         String checkIfIn = "SELECT beaconId FROM beaconDetails WHERE beaconId='" + myId + "' ";
         Cursor c2 = db.selectQuery(checkIfIn);
+        Log.i("Image", image.length + "");
 
         if (c2.getCount() == 0) {
             Log.i("NotIn", "not in database" + "");
-            String query = "INSERT INTO beaconDetails(beaconId, objectName, url) values ('"
-                    + "3FC5BB15-5FAF-4505-BDC8-A49DD6C19A45" + "','" + "The Beatles" + "','" + "www.beatles.co.uk" + "')";
+            String query = "INSERT INTO beaconDetails(beaconId, objectName, url, objectImage) values ('"
+                    + "3FC5BB15-5FAF-4505-BDC8-A49DD6C19A45" + "','" + "The Beatles" + "','" + "www.beatles.co.uk" + "','" + image + "')";
             db.executeQuery(query);
             c2.close();
         }
@@ -100,6 +111,9 @@ public class BeaconActivity extends AppCompatActivity implements GCellBeaconMana
                                 .getColumnIndex("objectName")));
                         beaconsListItems.setUrl(c1.getString(c1
                                 .getColumnIndex("url")));
+                        beaconsListItems.setImage(c1.getBlob(c1
+                                .getColumnIndex("objectImage")));
+                        Log.i("ImageInDatabase", c1.getBlob(c1.getColumnIndex("objectImage")).length + "");
 
                         beaconsArrayList.add(beaconsListItems);
 

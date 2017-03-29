@@ -8,16 +8,18 @@ public class Beacons {
     String beaconId;
     String objectName;
     String url;
+    byte[] image;
 
     public Beacons() {
 
     }
 
 
-    public Beacons(String beaconId, String objectName, String url) {
+    public Beacons(String beaconId, String objectName, String url, byte[] image) {
         this.beaconId = beaconId;
         this.objectName = objectName;
         this.url = url;
+        this.image = image;
     }
 
     public String getBeaconId() {
@@ -43,4 +45,13 @@ public class Beacons {
     public void setUrl(String url) {
         this.url = url;
     }
+
+    public byte[] getImage() {
+        return image;
+    }
+
+    public void setImage(byte[] image) {
+        this.image = image;
+    }
+
 }

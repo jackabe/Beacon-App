@@ -73,6 +73,7 @@ public class CustomBeaconAdapter extends BaseAdapter implements Filterable {
         Bitmap bmp = BitmapFactory.decodeByteArray(contactListItems.getImage(), 0, contactListItems.getImage().length);
         ImageView image = (ImageView) convertView.findViewById(R.id.objectIcon);
         image.setImageBitmap(bmp);
+        Log.i("ImageInDatabase", image + "");
 
 
 //        image.setImageBitmap(Bitmap.createScaledBitmap(bmp, 200, 100, false));

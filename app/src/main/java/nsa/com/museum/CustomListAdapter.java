@@ -18,30 +18,29 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-public class CustomListAdapter extends BaseAdapter implements Filterable {
+public class CustomListAdapter extends BaseAdapter {
 
     Context context;
-    ArrayList<Museums> contactList;
+    ArrayList<Museums> museumList;
     ArrayList<Museums> filterList;
-    CustomFilter filter;
 
     public CustomListAdapter(Context context, ArrayList<Museums> list) {
 
         this.context = context;
-        contactList = list;
-        this.filterList = contactList;
+        museumList = list;
+        this.filterList = museumList;
     }
 
     @Override
     public int getCount() {
 
-        return contactList.size();
+        return museumList.size();
     }
 
     @Override
     public Object getItem(int position) {
 
-        return contactList.get(position);
+        return museumList.get(position);
     }
 
     @Override
@@ -52,7 +51,7 @@ public class CustomListAdapter extends BaseAdapter implements Filterable {
 
     @Override
     public View getView(int position, View convertView, ViewGroup arg2) {
-        Museums contactListItems = contactList.get(position);
+        Museums museumListContent = museumList.get(position);
 
         if (convertView == null) {
             LayoutInflater inflater = (LayoutInflater) context
@@ -61,11 +60,11 @@ public class CustomListAdapter extends BaseAdapter implements Filterable {
 
         }
         final TextView museumName = (TextView) convertView.findViewById(R.id.title);
-        museumName.setText(contactListItems.getMuseumCity());
+        museumName.setText(museumListContent.getMuseumCity());
         TextView museumOpen = (TextView) convertView.findViewById(R.id.open);
         TextView museumClose = (TextView) convertView.findViewById(R.id.close);
-        museumOpen.setText("Opens at: " + contactListItems.getMuseumOpen());
-        museumClose.setText("Closes at: " + contactListItems.getMuseumClose());
+        museumOpen.setText("Opens at: " + museumListContent.getMuseumOpen());
+        museumClose.setText("Closes at: " + museumListContent.getMuseumClose());
         ImageView image = (ImageView) convertView.findViewById(R.id.icon);
         image.setImageResource(R.mipmap.icon);
 
@@ -79,44 +78,5 @@ public class CustomListAdapter extends BaseAdapter implements Filterable {
         });
         return convertView;
     }
-
-    @Override
-    public Filter getFilter() {
-        if (filter == null) {
-            filter = new CustomFilter();
-        }
-        return filter;
-    }
-
-    class CustomFilter extends Filter {
-
-        @Override
-        protected FilterResults performFiltering(CharSequence constraint) {
-            FilterResults results = new FilterResults();
-
-            if (constraint != null && constraint.length() > 0) {
-                constraint = constraint.toString().toUpperCase();
-                ArrayList<Museums> filters = new ArrayList<Museums>();
-                for (int i =0; i<filterList.size(); i++) {
-                    if(filterList.get(i).getMuseumCity().toUpperCase().contains(constraint)) {
-                        Museums museum = contactList.get(i);
-                        filters.add(museum);
-                    }
-                }
-                results.count = filterList.size();
-                results.values = filterList;
-            }
-            return results;
-        }
-
-        @Override
-        protected void publishResults(CharSequence constraint, FilterResults results) {
-            contactList = (ArrayList<Museums>) results.values;
-            notifyDataSetChanged();
-
-        }
-    }
-
-
 
 }

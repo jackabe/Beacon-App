@@ -1,5 +1,6 @@
 package nsa.com.museum;
 
+import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -8,29 +9,29 @@ public class DBBeacon {
 
     public static final String DATABASE_NAME = "BEACON_DATABASE";
     public static final int DATABASE_VERSION = 1;
-    SQLiteDatabase sqlDatabase;
-    ItemsDBHelper dbHelper;
+    SQLiteDatabase database;
+    ItemsDBHelper db;
 
     public DBBeacon(Context context) {
 
-        dbHelper = new ItemsDBHelper(context, DATABASE_NAME, null,
+        db = new ItemsDBHelper(context, DATABASE_NAME, null,
                 DATABASE_VERSION);
-        sqlDatabase = dbHelper.getWritableDatabase();
+        database = db.getWritableDatabase();
     }
 
     public void executeQuery(String query) {
         try {
 
-            if (sqlDatabase.isOpen()) {
-                sqlDatabase.close();
+            if (database.isOpen()) {
+                database.close();
             }
 
-            sqlDatabase = dbHelper.getWritableDatabase();
-            sqlDatabase.execSQL(query);
+            database = db.getWritableDatabase();
+            database.execSQL(query);
 
-        } catch (Exception e) {
+        } catch (Exception error) {
 
-            System.out.println("DATABASE ERROR " + e);
+            System.out.println("ERROR DATABASE " + error);
         }
 
     }
@@ -39,12 +40,12 @@ public class DBBeacon {
         Cursor c1 = null;
         try {
 
-            if (sqlDatabase.isOpen()) {
-                sqlDatabase.close();
+            if (database.isOpen()) {
+                database.close();
 
             }
-            sqlDatabase = dbHelper.getWritableDatabase();
-            c1 = sqlDatabase.rawQuery(query, null);
+            database = db.getWritableDatabase();
+            c1 = database.rawQuery(query, null);
 
         } catch (Exception e) {
 
@@ -53,6 +54,16 @@ public class DBBeacon {
         }
         return c1;
 
+    }
+
+    public void insert(String objId, String objName, String url, byte[] img) {
+        SQLiteDatabase d = db.getWritableDatabase();
+        ContentValues cv = new ContentValues();
+        cv.put("beaconId", objId);
+        cv.put("objectName", objName);
+        cv.put("url", url);
+        cv.put("objectImage", img);
+        d.insert(ItemsDBHelper.TABLE_BEACON_DETAILS, null, cv);
     }
 
 }

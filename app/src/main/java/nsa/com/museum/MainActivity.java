@@ -3,6 +3,7 @@ package nsa.com.museum;
 import android.Manifest;
 import android.app.PendingIntent;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -38,6 +39,8 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Toast;
+
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -66,6 +69,8 @@ public class MainActivity extends AppCompatActivity implements GCellBeaconManage
     Beacons beaconsListItems;
     String aBeacon;
     ArrayList<String> beacons;
+    TextView connection;
+    int counter;
 //    SearchView view;
 
 
@@ -86,12 +91,30 @@ public class MainActivity extends AppCompatActivity implements GCellBeaconManage
         findBtn = (Button) findViewById(R.id.findBtn);
         beaconAdap = new ArrayAdapter<>(getApplicationContext(),android.R.layout.simple_list_item_1);
         db = new DBConnector(this);
+
         scanMan = new GCellBeaconScanManager(this);
         scanMan.enableBlueToothAutoSwitchOn(true);
         scanMan.startScanningForBeacons();
         dID = 101;
         beaconsArrayList = new ArrayList<>();
+        connection = (TextView) findViewById(R.id.connection);
         beacons = new ArrayList<>();
+
+        SharedPreferences connectionPref = getSharedPreferences("connection", 0);
+        counter = connectionPref.getInt("connected", 0);
+
+        if (isConnected()) {
+            connection.setText("Internet Connected");
+        }
+
+        else {
+            connection.setText("No Internet");
+
+            if (counter < 1 ) {
+                Intent noConnection = new Intent(getApplicationContext(), Connection.class);
+                startActivity(noConnection);
+            }
+        }
 
         checkPermissions();
 
@@ -251,6 +274,11 @@ public class MainActivity extends AppCompatActivity implements GCellBeaconManage
                 startActivity(login);
                 return true;
 
+            case R.id.action_home:
+                Intent home = new Intent(getApplicationContext(), MainActivity.class);
+                startActivity(home);
+                return true;
+
             default:
                 // If we got here, the user's action was not recognized.
                 // Invoke the superclass to handle it.
@@ -357,6 +385,22 @@ public class MainActivity extends AppCompatActivity implements GCellBeaconManage
                 return;
             }
         }
+    }
+
+    public boolean isConnected() {
+        Runtime connection = Runtime.getRuntime();
+        try {
+            java.lang.Process ping = connection.exec("/system/bin/ping -c 1 8.8.8.8");
+            int exit = ping.waitFor();
+            return  (exit == 0);
+        }
+        catch (IOException error) {
+            error.printStackTrace();
+        }
+        catch (InterruptedException error) {
+            error.printStackTrace();
+        }
+        return false;
     }
 }
 

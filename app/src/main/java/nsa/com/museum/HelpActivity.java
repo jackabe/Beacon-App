@@ -51,6 +51,11 @@ public class HelpActivity extends AppCompatActivity {
                 startActivity(login);
                 return true;
 
+            case R.id.action_home:
+                Intent home = new Intent(getApplicationContext(), MainActivity.class);
+                startActivity(home);
+                return true;
+
             default:
                 // If we got here, the user's action was not recognized.
                 // Invoke the superclass to handle it.

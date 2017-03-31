@@ -16,6 +16,7 @@
     <string name="beacons_text">Hey! You are near </string>
     <string name="beacons_text_2">Beacons</string>
     <string name="beacons_title">There are beacons near you!</string>
+    <string name="action_home">Home</string>
 
     <string name="historyLabel">Your History</string>
     <string name="beaconsLabel">Beacons Nearby</string>
@@ -91,6 +92,11 @@
     <string name="hold">Hold click on me..</string>
     <string name="empty">Please enter a valid museum name..</string>
 
+    <string name="info1">To take full advantage of this app, please connect to either your mobile 3G/4G data or connect to the museums free wireless service.</string>
+    <string name="info2">Do not worry you can still use the app, however you may not be able to view sound or video clips.</string>
+    <string name="continue_anyway">Continue Anyway</string>
+    <string name="connection">No Connection</string>
+    <string name="intro">Hello, You are not connected to the internet!</string>
 
     <!-- Strings related to login -->
     <string name="prompt_email">Email</string>
@@ -104,4 +110,5 @@
     <string name="permission_rationale">"Contacts permissions are needed for providing email
         completions."
     </string>
+    <string name="title_activity_movies">MoviesActivity</string>
 </resources>

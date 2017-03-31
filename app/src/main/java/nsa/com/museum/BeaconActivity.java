@@ -7,8 +7,11 @@ import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.BitmapShader;
+import java.lang.Object;
 import android.net.Uri;
 import android.os.Build;
+import android.os.Process;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AlertDialog;
@@ -32,6 +35,9 @@ import com.gcell.ibeacon.gcellbeaconscanlibrary.GCelliBeacon;
 import org.w3c.dom.Text;
 
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InterruptedIOException;
+import java.sql.Blob;
 import java.util.ArrayList;
 import java.util.List;
 public class BeaconActivity extends AppCompatActivity implements GCellBeaconManagerScanEvents {
@@ -67,142 +73,76 @@ public class BeaconActivity extends AppCompatActivity implements GCellBeaconMana
         scanMan.enableBlueToothAutoSwitchOn(true);
         scanMan.startScanningForBeacons();
 
-    }
-
-
-    @Override
-    public void onGCellUpdateBeaconList(List<GCelliBeacon> list) {
-        String myId = "3FC5BB15-5FAF-4505-BDC8-A49DD6C19A45";
         Bitmap bmp = BitmapFactory.decodeResource(getResources(), R.drawable.beatles);
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
         bmp.compress(Bitmap.CompressFormat.JPEG, 70, stream);
         byte[] image = stream.toByteArray();
 
-        // lETS CHECK IF IT THE ID IS ALREADY IN THE DATABASE BEFORE WE ADD IT
-//
-//        String delQuery = "DELETE FROM beaconDetails WHERE beaconId='"+myId+"' ";
-//        db.executeQuery(delQuery);
+        db.insert("3FC5BB15-5FAF-4505-BDC8-A49DD6C19A45", "The beatles", "www.thebeatles.com", image);
+        db.insert("96530D4D-09AF-4159-B99E-951A5E826584", "Laura", "www.thebeatles.com", image);
+        db.insert("01E82601-8329-4BD6-A126-8A17B03D55EC", "Jack", "www.thebeatles.com", image);
 
-        String checkIfIn = "SELECT beaconId FROM beaconDetails WHERE beaconId='" + myId + "' ";
-        Cursor c2 = db.selectQuery(checkIfIn);
-        Log.i("Image", image.length + "");
-
-        if (c2.getCount() == 0) {
-            Log.i("NotIn", "not in database" + "");
-            String query = "INSERT INTO beaconDetails(beaconId, objectName, url, objectImage) values ('"
-                    + "3FC5BB15-5FAF-4505-BDC8-A49DD6C19A45" + "','" + "The Beatles" + "','" + "www.beatles.co.uk" + "','" + image + "')";
-            db.executeQuery(query);
-            c2.close();
-        }
-
-        else {
-
-            String check = "SELECT * FROM beaconDetails WHERE beaconId='" + myId + "' ";
-            Cursor c1 = db.selectQuery(check);
-            if (c1 != null && c1.getCount() != 0) {
-                if (c1.moveToFirst()) {
-                    do {
-
-                        beaconsArrayList.clear();
-                        beaconsListItems = new Beacons();
-                        beaconsListItems.setBeaconId(c1.getString(c1
-                                .getColumnIndex("beaconId")));
-                        beaconsListItems.setObjectName(c1.getString(c1
-                                .getColumnIndex("objectName")));
-                        beaconsListItems.setUrl(c1.getString(c1
-                                .getColumnIndex("url")));
-                        beaconsListItems.setImage(c1.getBlob(c1
-                                .getColumnIndex("objectImage")));
-                        Log.i("ImageInDatabase", c1.getBlob(c1.getColumnIndex("objectImage")).length + "");
-
-                        beaconsArrayList.add(beaconsListItems);
-
-                    } while (c1.moveToNext());
-                }
-                beaconAdapter = new CustomBeaconAdapter(
-                        BeaconActivity.this, beaconsArrayList);
-                lv.setAdapter(beaconAdapter);
-            }
-        }
     }
 
-//        if (c2 != null && c2.getCount() != 0) {
-//            if (c2.moveToFirst()) {
-//                do {
-//                    beaconsListItems = new Beacons();
-//                    beaconsListItems.setBeaconId(c2.getString(c2
-//                            .getColumnIndex("beaconId")));
-//                    idinDatabase = beaconsListItems.getBeaconId();
-//
-//                } while (c2.moveToNext());
-//            }
-//        }
-//
-//        if (myId.contains(idinDatabase)) {
-//
-//        }
+    @Override
+    public void onGCellUpdateBeaconList(List<GCelliBeacon> list) {
+        for (GCelliBeacon beacon : list) {
 
+            String theBeacon = beacon.getProxUuid().getStringFormattedUuid();
 
-//        for (GCelliBeacon beacon : list) {
-//
-//            String theBeacon = beacon.getProxUuid().getStringFormattedUuid();
-//
-//            if (!beacons.contains(theBeacon)) {
-//                aBeacon = theBeacon;
-//                beacons.add(aBeacon);
-//                Log.i("BeaconAddedToList", "Beacon added to list" + "");
-//            } else if (beacons.contains(theBeacon)) {
-//                aBeacon = theBeacon;
-//            }
-//
-//            String check = "SELECT * FROM beaconDetails WHERE beaconId='" + aBeacon + "' ";
-//            Log.i("BeaconAddedToList", check + "");
-//            Cursor c1 = db.selectQuery(check);
-////            Log.i("null", aBeacon + "");
-//            if (c1 != null && c1.getCount() != 0) {
-//                Log.i("null", "helloooo" + "");
-//                if (c1.moveToFirst()) {
-//                    do {
-//                        beaconsListItems = new Beacons();
-//                        beaconsListItems.setBeaconId(c1.getString(c1
-//                                .getColumnIndex("beaconsId")));
-//                        beaconId = beaconsListItems.getBeaconId();
-//                        Log.i("BeaconAddedToList", beaconId + "");
-//                     } while (c1.moveToNext());
-//
-//                        if (aBeacon.contains(beaconId)) {
-//                            beaconsArrayList = new ArrayList<>();
-//                            beaconsArrayList.clear();
-//                            String query = "SELECT * FROM beaconDetails WHERE beaconId='" + aBeacon + "' ";
-//                            Cursor c2 = db.selectQuery(query);
-//                            if (c2 != null && c2.getCount() != 0) {
-//                                if (c2.moveToFirst()) {
-//                                    do {
-//                                        beaconsListItems = new Beacons();
-////                                        Log.i("BeaconAddedToList", "heloooo" + "");
-//
-//                                        beaconsListItems.setBeaconId(c1.getString(c1
-//                                                .getColumnIndex("beaconsId")));
-//                                        beaconsListItems.setObjectName(c1.getString(c1
-//                                                .getColumnIndex("objectName")));
-//                                        beaconsListItems.setUrl(c1.getString(c1
-//                                                .getColumnIndex("url")));
-//
-//                                        beaconsArrayList.add(beaconsListItems);
-//
-//                                    } while (c1.moveToNext());
-//                                }
-//                            }
-//
-//                            c2.close();
-//                        }
-//                    beaconAdapter = new CustomBeaconAdapter(
-//                            BeaconActivity.this, beaconsArrayList);
-//                    lv.setAdapter(beaconAdapter);
-//                }
-//                }
-//            }
+            if (!beacons.contains(theBeacon)) {
+                aBeacon = theBeacon;
+                beacons.add(aBeacon);
+                Log.i("BeaconAddedToList", "Beacon added to list" + "");
+//                String delQuery = "DELETE FROM beaconDetails WHERE beaconId='"+"3FC5BB15-5FAF-4505-BDC8-A49DD6C19A45"+"' ";
+//                db.executeQuery(delQuery);
+//                String del2 = "DELETE FROM beaconDetails WHERE beaconId='"+"96530D4D-09AF-4159-B99E-951A5E826584"+"' ";
+//                db.executeQuery(del2);
+//                String del3 = "DELETE FROM beaconDetails WHERE beaconId='"+"01E82601-8329-4BD6-A126-8A17B03D55EC"+"' ";
+//                db.executeQuery(del3);
 
+                String checkIfIn = "SELECT beaconId FROM beaconDetails WHERE beaconId='" + aBeacon + "' ";
+                Cursor c2 = db.selectQuery(checkIfIn);
+
+                if (c2.getCount() == 0) {
+                    Log.i("NotIn", "not in database" + "");
+//                beaconsArrayList.clear();
+                    c2.close();
+                }
+
+                else {
+                    String check = "SELECT * FROM beaconDetails WHERE beaconId='" + aBeacon + "' ";
+                    Cursor c1 = db.selectQuery(check);
+                    if (c1 != null && c1.getCount() != 0) {
+                        if (c1.moveToFirst()) {
+                            do {
+
+                                beaconsListItems = new Beacons();
+                                beaconsListItems.setBeaconId(c1.getString(c1
+                                        .getColumnIndex("beaconId")));
+                                beaconsListItems.setObjectName(c1.getString(c1
+                                        .getColumnIndex("objectName")));
+                                beaconsListItems.setUrl(c1.getString(c1
+                                        .getColumnIndex("url")));
+                                byte[] b = c1.getBlob(c1.getColumnIndex("objectImage"));
+                                beaconsListItems.setImage(c1.getBlob(c1
+                                        .getColumnIndex("objectImage")));
+
+                                beaconsArrayList.add(beaconsListItems);
+
+                            } while (c1.moveToNext());
+                        }
+                        beaconAdapter = new CustomBeaconAdapter(
+                                BeaconActivity.this, beaconsArrayList);
+                        lv.setAdapter(beaconAdapter);
+                    }
+                }
+            } else if (beacons.contains(theBeacon)) {
+                aBeacon = theBeacon;
+            }
+
+        }
+    }
 
     /**
      * Ignore ALL of the methods below
@@ -301,10 +241,15 @@ public class BeaconActivity extends AppCompatActivity implements GCellBeaconMana
                 Intent login = new Intent(getApplicationContext(), AdminLogin.class);
                 startActivity(login);
                 return true;
+            case R.id.action_home:
+                Intent home = new Intent(getApplicationContext(), MainActivity.class);
+                startActivity(home);
+                return true;
             default:
                 // If we got here, the user's action was not recognized.
                 // Invoke the superclass to handle it.
                 return super.onOptionsItemSelected(item);
         }
     }
+
 }

@@ -25,29 +25,29 @@ import android.widget.Toast;
 public class CustomBeaconAdapter extends BaseAdapter implements Filterable {
 
     Context context;
-    ArrayList<Beacons> contactList;
+    ArrayList<Beacons> beaconList;
     ArrayList<Beacons> filterList;
     CustomFilter filter;
-    String item;
-    Beacons contactListItems;
+    String beacon;
+    Beacons beaconListItems;
 
     public CustomBeaconAdapter(Context context, ArrayList<Beacons> list) {
 
         this.context = context;
-        contactList = list;
-        this.filterList = contactList;
+        beaconList = list;
+        this.filterList = beaconList;
     }
 
     @Override
     public int getCount() {
 
-        return contactList.size();
+        return beaconList.size();
     }
 
     @Override
     public Object getItem(int position) {
 
-        return contactList.get(position);
+        return beaconList.get(position);
     }
 
     @Override
@@ -58,7 +58,7 @@ public class CustomBeaconAdapter extends BaseAdapter implements Filterable {
 
     @Override
     public View getView(int position, View convertView, ViewGroup arg2) {
-        contactListItems = contactList.get(position);
+        beaconListItems = beaconList.get(position);
 
         if (convertView == null) {
             LayoutInflater inflater = (LayoutInflater) context
@@ -67,10 +67,10 @@ public class CustomBeaconAdapter extends BaseAdapter implements Filterable {
 
         }
         final TextView objectName = (TextView) convertView.findViewById(R.id.name);
-        objectName.setText(contactListItems.getObjectName());
+        objectName.setText(beaconListItems.getObjectName());
 
 
-        Bitmap bmp = BitmapFactory.decodeByteArray(contactListItems.getImage(), 0, contactListItems.getImage().length);
+        Bitmap bmp = BitmapFactory.decodeByteArray(beaconListItems.getImage(), 0, beaconListItems.getImage().length);
         ImageView image = (ImageView) convertView.findViewById(R.id.objectIcon);
         image.setImageBitmap(bmp);
         Log.i("ImageInDatabase", image + "");
@@ -83,7 +83,7 @@ public class CustomBeaconAdapter extends BaseAdapter implements Filterable {
             public void onClick(View v) {
 
                 Toast.makeText(context, objectName.getText().toString() + " loaded!", Toast.LENGTH_SHORT).show();
-                Uri url = Uri.parse("https://" + contactListItems.getUrl().toString());
+                Uri url = Uri.parse("https://" + beaconListItems.getUrl().toString());
                 Intent intent = new Intent(Intent.ACTION_VIEW, url);
                 context.startActivity(intent);
             }
@@ -93,20 +93,20 @@ public class CustomBeaconAdapter extends BaseAdapter implements Filterable {
         convertView.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
-                item = objectName.getText().toString();
-                AlertDialog.Builder builder = new AlertDialog.Builder(context);
-                builder.setTitle("Options");
-                builder.setItems(new String[]{"Add to history", "Open", "Cancel"}, new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int which) {
-                        switch (which) {
+                beacon = objectName.getText().toString();
+                AlertDialog.Builder options = new AlertDialog.Builder(context);
+                options.setTitle("Choices");
+                options.setItems(new String[]{"Add to history", "Open", "Cancel"}, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int i) {
+                        switch (i) {
                             case 0:
-                                Toast.makeText(context, item + " added to history", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(context, beacon + " added to history", Toast.LENGTH_SHORT).show();
                                 Intent intent = new Intent(context, HistoryActivity.class);
                                 context.startActivity(intent);
                                 break;
                             case 1:
                                 Toast.makeText(context, objectName.getText().toString() + " loaded!", Toast.LENGTH_SHORT).show();
-                                Uri url = Uri.parse("https://" + contactListItems.getUrl().toString());
+                                Uri url = Uri.parse("https://" + beaconListItems.getUrl().toString());
                                 Intent intentUrl = new Intent(Intent.ACTION_VIEW, url);
                                 context.startActivity(intentUrl);
                                 break;
@@ -115,7 +115,7 @@ public class CustomBeaconAdapter extends BaseAdapter implements Filterable {
                         }
                     }
                 });
-                builder.show();
+                options.show();
                 return false;
             }
         });
@@ -136,25 +136,27 @@ public class CustomBeaconAdapter extends BaseAdapter implements Filterable {
         @Override
         protected FilterResults performFiltering(CharSequence constraint) {
             FilterResults results = new FilterResults();
-
-            if (constraint != null && constraint.length() > 0) {
-                constraint = constraint.toString().toUpperCase();
-                ArrayList<Beacons> filters = new ArrayList<>();
-                for (int i =0; i<filterList.size(); i++) {
-                    if(filterList.get(i).getObjectName().toUpperCase().contains(constraint)) {
-                        Beacons beacon = contactList.get(i);
-                        filters.add(beacon);
-                    }
-                }
-                results.count = filterList.size();
-                results.values = filterList;
-            }
+//
+//            if (constraint != null && constraint.length() > 0) {
+//                constraint = constraint.toString().toUpperCase();
+//                ArrayList<Beacons> filters = new ArrayList<>();
+//                for (int i =0; i<filterList.size(); i++) {
+//                    if(filterList.get(i).getObjectName().toUpperCase().contains(constraint)) {
+//                        Beacons beacon = beaconList.get(i);
+//                        filters.add(beacon);
+//                    }
+//                }
+//                results.count = filterList.size();
+//                results.values = filterList;
+//            }
             return results;
+//        }
         }
+
 
         @Override
         protected void publishResults(CharSequence constraint, FilterResults results) {
-            contactList = (ArrayList<Beacons>) results.values;
+            beaconList = (ArrayList<Beacons>) results.values;
             notifyDataSetChanged();
 
         }

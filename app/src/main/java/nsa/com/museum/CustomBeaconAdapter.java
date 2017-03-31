@@ -82,7 +82,7 @@ public class CustomBeaconAdapter extends BaseAdapter implements Filterable {
             @Override
             public void onClick(View v) {
 
-                Toast.makeText(context, objectName.getText().toString() + " loaded!", Toast.LENGTH_SHORT).show();
+                Toast.makeText(context, objectName.getText().toString() + context.getString(R.string.loaded), Toast.LENGTH_SHORT).show();
                 Uri url = Uri.parse("https://" + beaconListItems.getUrl().toString());
                 Intent intent = new Intent(Intent.ACTION_VIEW, url);
                 context.startActivity(intent);
@@ -95,17 +95,17 @@ public class CustomBeaconAdapter extends BaseAdapter implements Filterable {
             public boolean onLongClick(View v) {
                 beacon = objectName.getText().toString();
                 AlertDialog.Builder options = new AlertDialog.Builder(context);
-                options.setTitle("Choices");
-                options.setItems(new String[]{"Add to history", "Open", "Cancel"}, new DialogInterface.OnClickListener() {
+                options.setTitle(context.getString(R.string.options));
+                options.setItems(new String[]{context.getString(R.string.add), context.getString(R.string.open), context.getString(R.string.cancel)}, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int i) {
                         switch (i) {
                             case 0:
-                                Toast.makeText(context, beacon + " added to history", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(context, beacon + " " + context.getString(R.string.added_history), Toast.LENGTH_SHORT).show();
                                 Intent intent = new Intent(context, HistoryActivity.class);
                                 context.startActivity(intent);
                                 break;
                             case 1:
-                                Toast.makeText(context, objectName.getText().toString() + " loaded!", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(context, objectName.getText().toString() + " " + context.getString(R.string.loaded), Toast.LENGTH_SHORT).show();
                                 Uri url = Uri.parse("https://" + beaconListItems.getUrl().toString());
                                 Intent intentUrl = new Intent(Intent.ACTION_VIEW, url);
                                 context.startActivity(intentUrl);

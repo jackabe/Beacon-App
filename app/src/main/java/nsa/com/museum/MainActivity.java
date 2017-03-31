@@ -83,6 +83,7 @@ public class MainActivity extends AppCompatActivity implements GCellBeaconManage
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        checkPermissions();
 
 //        view = (SearchView) findViewById(R.id.hello);
         cityInput = (EditText) findViewById(R.id.editSearch);
@@ -116,8 +117,6 @@ public class MainActivity extends AppCompatActivity implements GCellBeaconManage
             }
         }
 
-        checkPermissions();
-
         museumsArrayList = new ArrayList<>();
         museumsArrayList.clear();
         final String query = "SELECT * FROM museumDetails ";
@@ -149,24 +148,11 @@ public class MainActivity extends AppCompatActivity implements GCellBeaconManage
                 MainActivity.this, museumsArrayList);
         museumsList.setAdapter(listAdapter);
 
-//        cityInput.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
-//            @Override
-//            public boolean onQueryTextSubmit(String query) {
-//                return false;
-//            }
-//
-//            @Override
-//            public boolean onQueryTextChange(String newText) {
-//                listAdapter.getFilter().filter(query);
-//                return false;
-//            }
-//        });
-
         searchBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 String city = cityInput.getText().toString();
-                if (city.contains("")) {
+                if (city.contains("") & !city.matches("[a-zA-Z]+")) {
                     Toast.makeText(getApplicationContext(), getString(R.string.empty), Toast.LENGTH_SHORT).show();
                 } else {
                     String firstLetter = city.substring(0, 1).toUpperCase();
@@ -289,13 +275,23 @@ public class MainActivity extends AppCompatActivity implements GCellBeaconManage
     }
     @Override
     public void onGCellUpdateBeaconList(List<GCelliBeacon> list) {
-        createNotification(getApplicationContext(), true, dID);
         for (GCelliBeacon beacon : list) {
+
             String theBeacon = beacon.getProxUuid().getStringFormattedUuid();
-            if (theBeacon.contains("")) {
-                Log.i("BeaconError", "No beacons to be found");
-            } else {
-//                createNotification(getApplicationContext(), true, dID, getString(R.string.click_me));
+
+            if (!beacons.contains(theBeacon)) {
+                aBeacon = theBeacon;
+                beacons.add(aBeacon);
+                Log.i("BeaconAddedToList", "Beacon added to list" + "");
+                String checkIfIn = "SELECT beaconId FROM beaconDetails WHERE beaconId='" + aBeacon + "' ";
+                Cursor c2 = db.selectQuery(checkIfIn);
+
+                if (c2.getCount() == 0) {
+                    Log.i("NotIn", "not in database" + "");
+                    c2.close();
+                } else {
+                    createNotification(getApplicationContext(), true, dID);
+                }
             }
         }
     }
@@ -386,6 +382,8 @@ public class MainActivity extends AppCompatActivity implements GCellBeaconManage
             }
         }
     }
+
+    // stack overflow reference here
 
     public boolean isConnected() {
         Runtime connection = Runtime.getRuntime();

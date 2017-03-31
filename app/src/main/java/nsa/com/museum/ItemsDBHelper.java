@@ -38,8 +38,8 @@ public class ItemsDBHelper extends SQLiteOpenHelper{
 
     private static final String CREATE_BEACON_DATABASE = "create table "
             + TABLE_BEACON_DETAILS + " (" + BEACON_ID
-            + " integer primary key, " + OBJECT_NAME
-            + " text not null, " + WEBSITE_URL + " text not null);";
+            + " text primary key, " + OBJECT_NAME
+            + " text not null, " + WEBSITE_URL + " text not null, " + OBJECT_IMAGE + " blob not null);";
 
     public ItemsDBHelper(Context context, String name, SQLiteDatabase.CursorFactory factory, int version) {
 
@@ -52,6 +52,28 @@ public class ItemsDBHelper extends SQLiteOpenHelper{
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_BEACON_DETAILS);
         db.execSQL(CREATE_MUSEUM_DATABASE);
         db.execSQL(CREATE_BEACON_DATABASE);
+
+        // Default loaded in beacons on apps first startup
+        db.execSQL("INSERT INTO museumDetails(museumCity, museumOpen, museumClose) values ('"
+                + "Cardiff" + "','" + 7 + "','" + 1800 + "')");
+        db.execSQL("INSERT INTO museumDetails(museumCity, museumOpen, museumClose) values ('"
+                + "London" + "','" + 6 + "','" + 1800 + "')");
+        db.execSQL("INSERT INTO museumDetails(museumCity, museumOpen, museumClose) values ('"
+                + "Newport" + "','" + 9 + "','" + 1900 + "')");
+        db.execSQL("INSERT INTO museumDetails(museumCity, museumOpen, museumClose) values ('"
+                + "Manchester" + "','" + 10 + "','" + 1600 + "')");
+        db.execSQL("INSERT INTO museumDetails(museumCity, museumOpen, museumClose) values ('"
+                + "Evesham" + "','" + 9 + "','" + 1900 + "')");
+        db.execSQL("INSERT INTO museumDetails(museumCity, museumOpen, museumClose) values ('"
+                + "Newcastle" + "','" + 9 + "','" + 1900 + "')");
+        db.execSQL("INSERT INTO museumDetails(museumCity, museumOpen, museumClose) values ('"
+                + "Aston" + "','" + 5 + "','" + 1900 + "')");
+        db.execSQL("INSERT INTO museumDetails(museumCity, museumOpen, museumClose) values ('"
+                + "Liverpool" + "','" + 7 + "','" + 1700 + "')");
+        db.execSQL("INSERT INTO museumDetails(museumCity, museumOpen, museumClose) values ('"
+                + "Stoke" + "','" + 9 + "','" + 1900 + "')");
+        db.execSQL("INSERT INTO museumDetails(museumCity, museumOpen, museumClose) values ('"
+                + "Kidderminster" + "','" + 7 + "','" + 1500 + "')");
     }
 
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {

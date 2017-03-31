@@ -25,11 +25,10 @@ public class HistoryActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        historyBeacons = getIntent().getExtras().getStringArrayList("beacons");
-        historyAdap = new ArrayAdapter(getApplicationContext(), android.R.layout.simple_list_item_1, historyBeacons);
-        historyLv = (ListView) findViewById(R.id.historyView);
-        historyLv.setAdapter(historyAdap);
-
+//        historyBeacons = getIntent().getExtras().getStringArrayList("beacons");
+//        historyAdap = new ArrayAdapter(getApplicationContext(), android.R.layout.simple_list_item_1, historyBeacons);
+//        historyLv = (ListView) findViewById(R.id.historyView);
+//        historyLv.setAdapter(historyAdap);
 
     }
 
@@ -59,6 +58,11 @@ public class HistoryActivity extends AppCompatActivity {
             case R.id.action_login:
                 Intent login = new Intent(getApplicationContext(), AdminLogin.class);
                 startActivity(login);
+                return true;
+
+            case R.id.action_home:
+                Intent home = new Intent(getApplicationContext(), MainActivity.class);
+                startActivity(home);
                 return true;
 
             default:

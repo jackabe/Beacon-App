@@ -143,5 +143,21 @@
         android:layout_below="@+id/addMuseum"
         android:layout_alignStart="@+id/addMuseum" />
 
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Delete"
+        android:id="@+id/deleteBeacon"
+        android:layout_alignTop="@+id/addLink"
+        android:layout_alignParentEnd="true" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Delete"
+        android:id="@+id/deleteMuseum"
+        android:layout_below="@+id/addMuseum"
+        android:layout_alignStart="@+id/addMuseum" />
+
 
 </RelativeLayout>

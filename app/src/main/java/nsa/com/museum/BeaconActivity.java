@@ -41,7 +41,6 @@ import java.sql.Blob;
 import java.util.ArrayList;
 import java.util.List;
 public class BeaconActivity extends AppCompatActivity implements GCellBeaconManagerScanEvents {
-
     GCellBeaconScanManager scanMan;
     ArrayList<String> historyBeacons = new ArrayList<>();
     DBBeacon db;
@@ -143,7 +142,6 @@ public class BeaconActivity extends AppCompatActivity implements GCellBeaconMana
 
         }
     }
-
     /**
      * Ignore ALL of the methods below
      *

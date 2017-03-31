@@ -408,4 +408,3 @@ public class MainActivity extends AppCompatActivity implements GCellBeaconManage
 
 
 
-

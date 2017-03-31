@@ -99,7 +99,7 @@ public class CustomListAdapter extends BaseAdapter {
             public void onClick(View v) {
                 Intent beacons = new Intent(context, BeaconActivity.class);
                 context.startActivity(beacons);
-                Toast.makeText(context, museumName.getText().toString() + " museum loaded!", Toast.LENGTH_SHORT).show();
+                Toast.makeText(context, museumName.getText().toString() + " " + context.getString(R.string.museum_loaded), Toast.LENGTH_SHORT).show();
             }
         });
         return convertView;

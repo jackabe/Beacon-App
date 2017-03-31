@@ -53,7 +53,7 @@ public class BeaconActivity extends AppCompatActivity implements GCellBeaconMana
     ArrayList<String> beacons;
 
     int PERM_CODE = 101;
-    String[] permissions = new String[]{Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.BLUETOOTH, Manifest.permission.BLUETOOTH_ADMIN};
+//    String[] permissions = new String[]{Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.BLUETOOTH, Manifest.permission.BLUETOOTH_ADMIN};
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -61,7 +61,6 @@ public class BeaconActivity extends AppCompatActivity implements GCellBeaconMana
         setContentView(R.layout.activity_beacon);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        checkPermissions();
 
         lv = (ListView) findViewById(R.id.beaconsLv);
         beaconsArrayList = new ArrayList<>();
@@ -167,9 +166,9 @@ public class BeaconActivity extends AppCompatActivity implements GCellBeaconMana
     }
     public void checkPermissions() {
         //Request permission if ANY permissions have been denied
-        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && !hasPermissions(getApplicationContext(), permissions)) {
-            ActivityCompat.requestPermissions(this, permissions, PERM_CODE);
-        }
+//        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && !hasPermissions(getApplicationContext(), permissions)) {
+//            ActivityCompat.requestPermissions(this, permissions, PERM_CODE);
+//        }
     }
     /**
      * Iterate through all permissions provided and ensure all have been approved

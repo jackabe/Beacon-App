@@ -111,4 +111,12 @@
         completions."
     </string>
     <string name="title_activity_movies">MoviesActivity</string>
+
+    <string name="loaded"> Loaded!</string>
+    <string name="options">Options</string>
+    <string name="add">Add to history</string>
+    <string name="cancel">Cancel</string>
+    <string name="open">Open</string>
+    <string name="added_history">Added to history!</string>
+    <string name="museum_loaded">Museum Loaded</string>
 </resources>

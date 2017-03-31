@@ -61,13 +61,13 @@ public class ItemsDBHelper extends SQLiteOpenHelper{
         db.execSQL("INSERT INTO museumDetails(museumCity, museumOpen, museumClose) values ('"
                 + "Newport" + "','" + 9 + "','" + 1900 + "')");
         db.execSQL("INSERT INTO museumDetails(museumCity, museumOpen, museumClose) values ('"
-                + "Manchester" + "','" + 10 + "','" + 1600 + "')");
+                + "Manchester" + "','" + 1600 + "','" + 2100 + "')");
         db.execSQL("INSERT INTO museumDetails(museumCity, museumOpen, museumClose) values ('"
                 + "Evesham" + "','" + 9 + "','" + 1900 + "')");
         db.execSQL("INSERT INTO museumDetails(museumCity, museumOpen, museumClose) values ('"
                 + "Newcastle" + "','" + 9 + "','" + 1900 + "')");
         db.execSQL("INSERT INTO museumDetails(museumCity, museumOpen, museumClose) values ('"
-                + "Aston" + "','" + 5 + "','" + 1900 + "')");
+                + "Aston" + "','" + 1700 + "','" + 1900 + "')");
         db.execSQL("INSERT INTO museumDetails(museumCity, museumOpen, museumClose) values ('"
                 + "Liverpool" + "','" + 7 + "','" + 1700 + "')");
         db.execSQL("INSERT INTO museumDetails(museumCity, museumOpen, museumClose) values ('"

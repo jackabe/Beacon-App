@@ -1,10 +1,12 @@
 package nsa.com.museum;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.provider.SyncStateContract;
 import android.support.design.widget.Snackbar;
 import android.util.Log;
@@ -23,6 +25,10 @@ public class CustomListAdapter extends BaseAdapter {
     Context context;
     ArrayList<Museums> museumList;
     ArrayList<Museums> filterList;
+    int open;
+    int close;
+    Calendar time;
+    int currentHour;
 
     public CustomListAdapter(Context context, ArrayList<Museums> list) {
 
@@ -67,6 +73,26 @@ public class CustomListAdapter extends BaseAdapter {
         museumClose.setText("Closes at: " + museumListContent.getMuseumClose());
         ImageView image = (ImageView) convertView.findViewById(R.id.icon);
         image.setImageResource(R.mipmap.icon);
+        TextView state = (TextView) convertView.findViewById(R.id.state);
+        open = museumListContent.getMuseumOpen();
+        close = museumListContent.getMuseumClose();
+        time = Calendar.getInstance();
+        currentHour = time.get(Calendar.HOUR_OF_DAY);
+
+        if (currentHour > open) {
+            state.setText("Open");
+            state.setTextColor(Color.parseColor("#006600"));
+        }
+
+        else if (currentHour < open) {
+            state.setText("Closed");
+            state.setTextColor(Color.parseColor("#cc0000"));
+        }
+
+        else {
+            state.setText("Closed");
+            state.setTextColor(Color.RED);
+        }
 
         convertView.setOnClickListener(new View.OnClickListener() {
             @Override

@@ -71,15 +71,23 @@ public class BeaconActivity extends AppCompatActivity implements GCellBeaconMana
         scanMan.enableBlueToothAutoSwitchOn(true);
         scanMan.startScanningForBeacons();
 
-        Bitmap bmp = BitmapFactory.decodeResource(getResources(), R.drawable.beatles);
-        ByteArrayOutputStream stream = new ByteArrayOutputStream();
-        bmp.compress(Bitmap.CompressFormat.JPEG, 70, stream);
-        byte[] image = stream.toByteArray();
+        Bitmap majesty = BitmapFactory.decodeResource(getResources(), R.drawable.abby);
+        Bitmap mad = BitmapFactory.decodeResource(getResources(), R.drawable.mad);
+        Bitmap beatles = BitmapFactory.decodeResource(getResources(), R.drawable.beatles);
+        byte[] beatlesByte = SetImage.getBytes(beatles);
+        byte[] madByte = SetImage.getBytes(mad);
+        byte[] majestysByte = SetImage.getBytes(majesty);
 
-        db.insert("3FC5BB15-5FAF-4505-BDC8-A49DD6C19A45", "The beatles", "www.thebeatles.com", image);
-        db.insert("96530D4D-09AF-4159-B99E-951A5E826584", "Laura", "www.thebeatles.com", image);
-        db.insert("01E82601-8329-4BD6-A126-8A17B03D55EC", "Jack", "www.thebeatles.com", image);
+//        String delQuery = "DELETE FROM beaconDetails WHERE beaconId='"+"3FC5BB15-5FAF-4505-BDC8-A49DD6C19A45"+"' ";
+//        db.executeQuery(delQuery);
+//        String del2 = "DELETE FROM beaconDetails WHERE beaconId='"+"96530D4D-09AF-4159-B99E-951A5E826584"+"' ";
+//        db.executeQuery(del2);
+//        String del3 = "DELETE FROM beaconDetails WHERE beaconId='"+"01E82601-8329-4BD6-A126-8A17B03D55EC"+"' ";
+//        db.executeQuery(del3);
 
+        db.insert("3FC5BB15-5FAF-4505-BDC8-A49DD6C1", "Majesty", "http://rhp.avoqr.eu/en/majesty", majestysByte);
+        db.insert("96530D4D-09AF-4159-B99E-951A5E826584", "Madeleine Peyroux", "www.thebeatles.com", madByte);
+        db.insert("01E82601-8329-4BD6-A126-8A17B03D55EC", "The Beatles", "www.thebeatles.com", beatlesByte);
     }
 
     @Override
@@ -92,13 +100,6 @@ public class BeaconActivity extends AppCompatActivity implements GCellBeaconMana
                 aBeacon = theBeacon;
                 beacons.add(aBeacon);
                 Log.i("BeaconAddedToList", "Beacon added to list" + "");
-//                String delQuery = "DELETE FROM beaconDetails WHERE beaconId='"+"3FC5BB15-5FAF-4505-BDC8-A49DD6C19A45"+"' ";
-//                db.executeQuery(delQuery);
-//                String del2 = "DELETE FROM beaconDetails WHERE beaconId='"+"96530D4D-09AF-4159-B99E-951A5E826584"+"' ";
-//                db.executeQuery(del2);
-//                String del3 = "DELETE FROM beaconDetails WHERE beaconId='"+"01E82601-8329-4BD6-A126-8A17B03D55EC"+"' ";
-//                db.executeQuery(del3);
-
                 String checkIfIn = "SELECT beaconId FROM beaconDetails WHERE beaconId='" + aBeacon + "' ";
                 Cursor c2 = db.selectQuery(checkIfIn);
 

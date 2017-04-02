@@ -15,6 +15,8 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.webkit.WebSettings;
+import android.webkit.WebView;
 import android.widget.BaseAdapter;
 import android.widget.Filter;
 import android.widget.Filterable;
@@ -30,6 +32,7 @@ public class CustomBeaconAdapter extends BaseAdapter implements Filterable {
     CustomFilter filter;
     String beacon;
     Beacons beaconListItems;
+    InternetConnection internetConnection;
 
     public CustomBeaconAdapter(Context context, ArrayList<Beacons> list) {
 
@@ -93,6 +96,7 @@ public class CustomBeaconAdapter extends BaseAdapter implements Filterable {
         convertView.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
+                internetConnection = new InternetConnection();
                 beacon = objectName.getText().toString();
                 AlertDialog.Builder options = new AlertDialog.Builder(context);
                 options.setTitle(context.getString(R.string.options));
@@ -105,10 +109,23 @@ public class CustomBeaconAdapter extends BaseAdapter implements Filterable {
                                 context.startActivity(intent);
                                 break;
                             case 1:
+                                WebView webView = new WebView( context );
+                                webView.getSettings().setAppCacheMaxSize( 5 * 1024 * 1024 ); // 5MB
+                                webView.getSettings().setAppCachePath( context.getCacheDir().getAbsolutePath() );
+                                webView.getSettings().setAllowFileAccess( true );
+                                webView.getSettings().setAppCacheEnabled( true );
+                                webView.getSettings().setJavaScriptEnabled( true );
+                                webView.getSettings().setCacheMode( WebSettings.LOAD_DEFAULT ); // load online by default
+
+                                if ( !internetConnection.isConnected() ) { // loading offline
+                                    webView.getSettings().setCacheMode( WebSettings.LOAD_CACHE_ELSE_NETWORK );
+                                }
+
+                                webView.loadUrl( "https://" + beaconListItems.getUrl().toString());
                                 Toast.makeText(context, objectName.getText().toString() + " " + context.getString(R.string.loaded), Toast.LENGTH_SHORT).show();
-                                Uri url = Uri.parse("https://" + beaconListItems.getUrl().toString());
-                                Intent intentUrl = new Intent(Intent.ACTION_VIEW, url);
-                                context.startActivity(intentUrl);
+//                                Uri url = Uri.parse("https://" + beaconListItems.getUrl().toString());
+//                                Intent intentUrl = new Intent(Intent.ACTION_VIEW, url);
+//                                context.startActivity(intentUrl);
                                 break;
                             case 2:
                                 break;

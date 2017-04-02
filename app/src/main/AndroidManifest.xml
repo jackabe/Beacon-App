@@ -2,11 +2,12 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="nsa.com.museum">
 
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
-    <uses-permission android:name="android.permission.INTERNET"/>
-    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.BLUETOOTH" />
     <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
 
     <application
         android:allowBackup="true"
@@ -49,7 +50,6 @@
         <activity
             android:name=".HelpActivity"
             android:label="@string/title_activity_help"
-
             android:theme="@style/AppTheme.NoActionBar" />
 
         <meta-data
@@ -70,8 +70,15 @@
         <activity
             android:name=".Connection"
             android:label="@string/connection"
-            android:theme="@style/AppTheme.NoActionBar"
-           />
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".MessageCenterActivity"
+            android:label="@string/messages"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".QuestionActivity"
+            android:label="@string/messages"
+            android:theme="@style/AppTheme.NoActionBar" />
     </application>
 
 </manifest>

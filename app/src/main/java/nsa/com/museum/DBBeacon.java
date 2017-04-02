@@ -56,14 +56,16 @@ public class DBBeacon {
 
     }
 
-    public void insert(String objId, String objName, String url, byte[] img) {
+    public void insert(String objId, String museumId, String objName, String url, byte[] img) {
         SQLiteDatabase d = db.getWritableDatabase();
         ContentValues cv = new ContentValues();
         cv.put("beaconId", objId);
+        cv.put("museumId", museumId);
         cv.put("objectName", objName);
         cv.put("url", url);
         cv.put("objectImage", img);
         d.insert(ItemsDBHelper.TABLE_BEACON_DETAILS, null, cv);
     }
+
 
 }

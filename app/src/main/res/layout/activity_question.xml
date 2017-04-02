@@ -17,7 +17,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:fitsSystemWindows="true"
-        tools:context="nsa.com.museum.HelpActivity"
+        tools:context="nsa.com.museum.QuestionActivity"
         android:layout_alignParentTop="true"
         android:layout_alignParentStart="true">
 
@@ -41,75 +41,51 @@
         </android.support.design.widget.AppBarLayout>
 
 
-
     </android.support.design.widget.CoordinatorLayout>
 
     <TextView
-        android:id="@+id/help"
+        android:id="@+id/textView4"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="114dp"
-        android:text="@string/help"
-        android:textAppearance="@android:style/TextAppearance.Material.Display2" />
+        android:textSize="20dp"
+        android:text="Ask a question" />
 
-    <TextView
+    <EditText
+        android:id="@+id/title"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="170dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="@string/help1"
-        android:id="@+id/help1"
-        android:layout_below="@+id/help"
-        android:layout_alignParentStart="true"
-        android:padding="7dp"
-        android:textSize="18dp"
-        android:layout_marginTop="21dp" />
+        android:ems="10"
+        android:layout_below="@id/textView4"
+        android:inputType="textPersonName"
+        android:hint="Question Title" />
 
-    <TextView
-        android:id="@+id/help2"
+    <EditText
+        android:id="@+id/question"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="250dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentStart="true"
-        android:layout_below="@+id/help1"
-        android:layout_marginTop="21dp"
-        android:padding="7dp"
-        android:text="@string/help2"
-        android:textAppearance="?android:attr/textAppearanceLarge"
-        android:textSize="18dp" />
-
-    <TextView
-        android:id="@+id/help3"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentStart="true"
-        android:layout_below="@+id/help2"
-        android:layout_marginTop="21dp"
-        android:padding="7dp"
-        android:text="@string/help3"
-        android:textAppearance="?android:attr/textAppearanceLarge"
-        android:textSize="18dp" />
+        android:ems="10"
+        android:layout_below="@id/title"
+        android:inputType="textPersonName"
+        android:hint="Enter your question..." />
 
     <Button
-        android:id="@+id/contact"
-        style="@style/button_text"
+        android:id="@+id/submitQuestion"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="450dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentBottom="true"
-        android:background="@drawable/black_button"
-        android:text="FAQ"
-        android:layout_toEndOf="@+id/stillHelpButton" />
+        android:layout_below="@id/title"
+        android:text="Send" />
 
-    <Button
-        android:id="@+id/stillHelpButton"
-        style="@style/button_text"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentStart="true"
-        android:layout_marginStart="50dp"
-        android:background="@drawable/black_button"
-        android:text="@string/stillHelp" />
 
 </RelativeLayout>

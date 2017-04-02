@@ -46,6 +46,8 @@ public class AdminActivity extends AppCompatActivity {
     String link;
     DBConnector db;
 
+    Button messages;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -65,8 +67,17 @@ public class AdminActivity extends AppCompatActivity {
         addLink = (EditText) findViewById(R.id.addLink);
         addBeacon = (Button) findViewById(R.id.addBeacon);
         deleteBeacon = (Button) findViewById(R.id.deleteBeacon);
+        messages = (Button) findViewById(R.id.messages);
 
         db = new DBConnector(this);
+
+        messages.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getApplicationContext(), MessageCenterActivity.class);
+                startActivity(intent);
+            }
+        });
 
         addMuseum.setOnClickListener(new View.OnClickListener() {
             @Override

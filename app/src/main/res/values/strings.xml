@@ -70,14 +70,18 @@
     </string-array>
 
     <string name="pref_title_system_sync_settings">System sync settings</string>
+    <string name="help">I NEED HELP</string>
 
     <!-- Example settings for Notifications -->
     <string name="pref_header_notifications">Notifications</string>
 
     <string name="pref_title_new_message_notifications">New message notifications</string>
+    <string name="flagged">Your help flag has been sent to a helper" Stand by!</string>
 
     <string name="pref_title_ringtone">Ringtone</string>
     <string name="pref_ringtone_silent">Silent</string>
+
+    <string name="stillHelp">I STILL NEED HELP</string>
 
     <string name="pref_title_vibrate">Vibrate</string>
     <string name="title_activity_main">MainActivity</string>
@@ -119,4 +123,12 @@
     <string name="open">Open</string>
     <string name="added_history">Added to history!</string>
     <string name="museum_loaded">Museum Loaded</string>
+
+    <!-- Help page -->
+    <string name="help1">1) Click on a museum on the homepage, or search for one you know, or use the find me button to help you with your search.</string>
+    <string name="help2">2) Once you have clicked on a museum you will see a list of data load up. If nothing loads up, ensure your bluetooth is turned on that that you are in the correct museum.</string>
+    <string name="help3">3) If you click on an item in the list, you will load up that artifcats information. Alternatively you can hold tap on an item to save it to your history so you can see this again in the future.</string>
+
+    <string name="messages">Help Center</string>
+    <string name="centerTitle">Help</string>
 </resources>

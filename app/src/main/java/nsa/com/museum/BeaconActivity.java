@@ -3,6 +3,7 @@ import android.Manifest;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
@@ -51,6 +52,7 @@ public class BeaconActivity extends AppCompatActivity implements GCellBeaconMana
     ListView lv;
     String aBeacon;
     ArrayList<String> beacons;
+    String museumCity;
 
     int PERM_CODE = 101;
 //    String[] permissions = new String[]{Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.BLUETOOTH, Manifest.permission.BLUETOOTH_ADMIN};
@@ -61,6 +63,10 @@ public class BeaconActivity extends AppCompatActivity implements GCellBeaconMana
         setContentView(R.layout.activity_beacon);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+        SharedPreferences museum = getSharedPreferences("museum", 0);
+        museumCity = museum.getString("museum", "museum");
+//        Toast.makeText(getApplicationContext(), museumCity , Toast.LENGTH_SHORT).show();
 
         lv = (ListView) findViewById(R.id.beaconsLv);
         beaconsArrayList = new ArrayList<>();
@@ -85,9 +91,9 @@ public class BeaconActivity extends AppCompatActivity implements GCellBeaconMana
 //        String del3 = "DELETE FROM beaconDetails WHERE beaconId='"+"01E82601-8329-4BD6-A126-8A17B03D55EC"+"' ";
 //        db.executeQuery(del3);
 
-        db.insert("3FC5BB15-5FAF-4505-BDC8-A49DD6C1", "Majesty", "http://rhp.avoqr.eu/en/majesty", majestysByte);
-        db.insert("96530D4D-09AF-4159-B99E-951A5E826584", "Madeleine Peyroux", "www.thebeatles.com", madByte);
-        db.insert("01E82601-8329-4BD6-A126-8A17B03D55EC", "The Beatles", "www.thebeatles.com", beatlesByte);
+        db.insert("3FC5BB15-5FAF-4505-BDC8-A49DD6C1", "Cardiff", "Majesty", "http://rhp.avoqr.eu/en/majesty", majestysByte);
+        db.insert("96530D4D-09AF-4159-B99E-951A5E826584", "Cardiff", "Madeleine Peyroux", "www.thebeatles.com", madByte);
+        db.insert("01E82601-8329-4BD6-A126-8A17B03D55EC", "Cardiff", "The Beatles", "www.thebeatles.com", beatlesByte);
     }
 
     @Override
@@ -110,7 +116,7 @@ public class BeaconActivity extends AppCompatActivity implements GCellBeaconMana
                 }
 
                 else {
-                    String check = "SELECT * FROM beaconDetails WHERE beaconId='" + aBeacon + "' ";
+                    String check = "SELECT * FROM beaconDetails WHERE beaconId='" + aBeacon + "WHERE museumId='" + museumCity + "' ";
                     Cursor c1 = db.selectQuery(check);
                     if (c1 != null && c1.getCount() != 0) {
                         if (c1.moveToFirst()) {

@@ -6,6 +6,7 @@ import java.util.List;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.provider.SyncStateContract;
 import android.support.design.widget.Snackbar;
@@ -29,6 +30,7 @@ public class CustomListAdapter extends BaseAdapter {
     int close;
     Calendar time;
     int currentHour;
+    String museumCity;
 
     public CustomListAdapter(Context context, ArrayList<Museums> list) {
 
@@ -97,9 +99,14 @@ public class CustomListAdapter extends BaseAdapter {
         convertView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                museumCity = museumName.getText().toString();
+                SharedPreferences museum = context.getSharedPreferences("museum", context.MODE_PRIVATE);
+                SharedPreferences.Editor edit = museum.edit();
+                edit.putString("museum", museumCity);
+                edit.commit();
                 Intent beacons = new Intent(context, BeaconActivity.class);
                 context.startActivity(beacons);
-                Toast.makeText(context, museumName.getText().toString() + " " + context.getString(R.string.museum_loaded), Toast.LENGTH_SHORT).show();
+                Toast.makeText(context, museumCity + " " + context.getString(R.string.museum_loaded), Toast.LENGTH_SHORT).show();
             }
         });
         return convertView;

@@ -71,6 +71,7 @@ public class MainActivity extends AppCompatActivity implements GCellBeaconManage
     ArrayList<String> beacons;
     TextView connection;
     int counter;
+    InternetConnection internetConnection;
 //    SearchView view;
 
 
@@ -87,10 +88,10 @@ public class MainActivity extends AppCompatActivity implements GCellBeaconManage
 
 //        view = (SearchView) findViewById(R.id.hello);
         cityInput = (EditText) findViewById(R.id.editSearch);
-        searchBtn = (Button)findViewById(R.id.searchBtn);
+        searchBtn = (Button) findViewById(R.id.searchBtn);
         museumsList = (ListView) findViewById(R.id.museumsList);
         findBtn = (Button) findViewById(R.id.findBtn);
-        beaconAdap = new ArrayAdapter<>(getApplicationContext(),android.R.layout.simple_list_item_1);
+        beaconAdap = new ArrayAdapter<>(getApplicationContext(), android.R.layout.simple_list_item_1);
         db = new DBConnector(this);
 
         scanMan = new GCellBeaconScanManager(this);
@@ -104,14 +105,13 @@ public class MainActivity extends AppCompatActivity implements GCellBeaconManage
         SharedPreferences connectionPref = getSharedPreferences("connection", 0);
         counter = connectionPref.getInt("connected", 0);
 
-        if (isConnected()) {
+        internetConnection = new InternetConnection();
+        if (internetConnection.isConnected()) {
             connection.setText("Internet Connected");
-        }
-
-        else {
+        } else {
             connection.setText("No Internet");
 
-            if (counter < 1 ) {
+            if (counter < 1) {
                 Intent noConnection = new Intent(getApplicationContext(), Connection.class);
                 startActivity(noConnection);
             }
@@ -125,7 +125,7 @@ public class MainActivity extends AppCompatActivity implements GCellBeaconManage
             if (c1.moveToFirst()) {
                 Log.i("DB", c1.getInt(c1.getColumnIndex("museumOpen")) + "");
 
-            Log.i("DB", c1.getColumnCount() + "");
+                Log.i("DB", c1.getColumnCount() + "");
 
                 do {
                     museumListItems = new Museums();
@@ -226,6 +226,7 @@ public class MainActivity extends AppCompatActivity implements GCellBeaconManage
         NotificationManager mNotificationManager = (NotificationManager) ctx.getSystemService(Context.NOTIFICATION_SERVICE);
         mNotificationManager.notify(id, notifBuilder.build());
     }
+
     //TODO 3 add a click listener to the dismiss button to hide any notification that is showing
     public void dismissNotification(int id) {
         NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
@@ -273,6 +274,7 @@ public class MainActivity extends AppCompatActivity implements GCellBeaconManage
         }
 
     }
+
     @Override
     public void onGCellUpdateBeaconList(List<GCelliBeacon> list) {
         for (GCelliBeacon beacon : list) {
@@ -298,6 +300,7 @@ public class MainActivity extends AppCompatActivity implements GCellBeaconManage
 
     /**
      * Ignore ALL of the methods below
+     *
      * @param gCellBeaconRegion
      */
 
@@ -333,13 +336,14 @@ public class MainActivity extends AppCompatActivity implements GCellBeaconManage
 
     public void checkPermissions() {
         //Request permission if ANY permissions have been denied
-        if(android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && !hasPermissions(getApplicationContext(), permissions)) {
+        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && !hasPermissions(getApplicationContext(), permissions)) {
             ActivityCompat.requestPermissions(this, permissions, PERM_CODE);
         }
     }
 
     /**
      * Iterate through all permissions provided and ensure all have been approved
+     *
      * @param context
      * @param permissions
      * @return
@@ -357,6 +361,7 @@ public class MainActivity extends AppCompatActivity implements GCellBeaconManage
 
     /**
      * Called when the user has dealt with the permissions box and we are told if they granted or denied access
+     *
      * @param requestCode
      * @param permissions
      * @param grantResults
@@ -383,26 +388,7 @@ public class MainActivity extends AppCompatActivity implements GCellBeaconManage
         }
     }
 
-    // stack overflow reference here
-
-    public boolean isConnected() {
-        Runtime connection = Runtime.getRuntime();
-        try {
-            java.lang.Process ping = connection.exec("/system/bin/ping -c 1 8.8.8.8");
-            int exit = ping.waitFor();
-            return  (exit == 0);
-        }
-        catch (IOException error) {
-            error.printStackTrace();
-        }
-        catch (InterruptedException error) {
-            error.printStackTrace();
-        }
-        return false;
-    }
 }
-
-
 
 
 

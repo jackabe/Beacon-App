@@ -152,12 +152,16 @@
         android:layout_alignParentEnd="true" />
 
     <Button
+        android:id="@+id/messages"
+        style="@style/button_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Delete"
-        android:id="@+id/deleteMuseum"
-        android:layout_below="@+id/addMuseum"
-        android:layout_alignStart="@+id/addMuseum" />
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentStart="true"
+        android:layout_marginStart="50dp"
+        android:background="@drawable/black_button"
+        android:text="@string/messages"
+        android:layout_alignParentEnd="true" />
 
 
 </RelativeLayout>

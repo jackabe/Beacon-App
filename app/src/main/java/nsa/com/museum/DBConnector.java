@@ -11,6 +11,8 @@ public class DBConnector {
     SQLiteDatabase sqlDatabase;
     ItemsDBHelper dbHelper;
 
+    // Code referenced from the source http://androidtuts4u.blogspot.co.uk/2013/02/android-list-view-using-custom-adapter.html.
+
     public DBConnector(Context context) {
 
         dbHelper = new ItemsDBHelper(context, DATABASE_NAME, null,

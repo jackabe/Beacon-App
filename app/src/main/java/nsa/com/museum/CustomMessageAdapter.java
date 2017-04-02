@@ -28,6 +28,8 @@ public class CustomMessageAdapter extends BaseAdapter {
     String messageTitle;
     String messageAnswered;
 
+    // Code referenced from the source http://androidtuts4u.blogspot.co.uk/2013/02/android-list-view-using-custom-adapter.html.
+
     public CustomMessageAdapter(Context context, ArrayList<Messages> list) {
 
         this.context = context;

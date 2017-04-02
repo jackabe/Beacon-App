@@ -12,6 +12,8 @@ public class DBBeacon {
     SQLiteDatabase database;
     ItemsDBHelper db;
 
+    // Code referenced from the source http://androidtuts4u.blogspot.co.uk/2013/02/android-list-view-using-custom-adapter.html.
+
     public DBBeacon(Context context) {
 
         db = new ItemsDBHelper(context, DATABASE_NAME, null,

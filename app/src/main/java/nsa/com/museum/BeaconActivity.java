@@ -64,9 +64,9 @@ public class BeaconActivity extends AppCompatActivity implements GCellBeaconMana
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        // Check which museum they click on, it is sotred in the sp.
         SharedPreferences museum = getSharedPreferences("museum", 0);
         museumCity = museum.getString("museum", "museum");
-//        Toast.makeText(getApplicationContext(), museumCity , Toast.LENGTH_SHORT).show();
 
         lv = (ListView) findViewById(R.id.beaconsLv);
         beaconsArrayList = new ArrayList<>();
@@ -77,6 +77,8 @@ public class BeaconActivity extends AppCompatActivity implements GCellBeaconMana
         scanMan.enableBlueToothAutoSwitchOn(true);
         scanMan.startScanningForBeacons();
 
+        // Coverting all the images to insert into the database from png's to bitmaps to bytes.
+        // Code here referenced from http://stackoverflow.com/questions/20700181/convert-imageview-in-bytes-android.
         Bitmap majesty = BitmapFactory.decodeResource(getResources(), R.drawable.abby);
         Bitmap mad = BitmapFactory.decodeResource(getResources(), R.drawable.mad);
         Bitmap beatles = BitmapFactory.decodeResource(getResources(), R.drawable.beatles);
@@ -102,6 +104,14 @@ public class BeaconActivity extends AppCompatActivity implements GCellBeaconMana
 
             String theBeacon = beacon.getProxUuid().getStringFormattedUuid();
 
+            // Code referenced from the source http://androidtuts4u.blogspot.co.uk/2013/02/android-list-view-using-custom-adapter.html.
+
+            // Check if the beacon found has already been seen and is a valid one from the database.
+            // Get the beacon id and compared it with all in database.
+            // Create new cursor and select all rows from the table
+            // Set each value we want from the database show in our list adapter.
+            // Add the array list contaning these values to the custom list adapter.
+
             if (!beacons.contains(theBeacon)) {
                 aBeacon = theBeacon;
                 beacons.add(aBeacon);
@@ -111,7 +121,7 @@ public class BeaconActivity extends AppCompatActivity implements GCellBeaconMana
 
                 if (c2.getCount() == 0) {
                     Log.i("NotIn", "not in database" + "");
-//                beaconsArrayList.clear();
+                    beaconsArrayList.clear();
                     c2.close();
                 }
 

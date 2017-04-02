@@ -15,6 +15,8 @@ public class Beacons {
 
     }
 
+    // get and setters for beacons.
+    // non empty constructor isn't called as i made it for the ease of generating getters and setters.
 
     public Beacons(String beaconId, String objectName, String url, String museumId, byte[] image) {
         this.beaconId = beaconId;

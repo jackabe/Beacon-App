@@ -6,6 +6,8 @@ package nsa.com.museum;
 
 public class Messages {
 
+    // get and set method for the messages database.
+
     String messageTitle;
     String messageQuestion;
     String messageAnswered;

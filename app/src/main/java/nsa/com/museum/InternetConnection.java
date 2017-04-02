@@ -8,6 +8,9 @@ import java.io.IOException;
 
 public class InternetConnection {
 
+    // Code referenced from the source http://stackoverflow.com/questions/1560788/how-to-check-internet-access-on-android-inetaddress-never-times-out
+
+    // it pings a google server and if the ping is successful return the boolean true.
     public boolean isConnected() {
         Runtime connection = Runtime.getRuntime();
         try {

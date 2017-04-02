@@ -6,6 +6,8 @@ import android.database.sqlite.SQLiteDatabase;
 
 public class MessageConnector {
 
+    // Code referenced from the source http://androidtuts4u.blogspot.co.uk/2013/02/android-list-view-using-custom-adapter.html.
+
     public static final String DATABASE_NAME = "MessageDatabase";
     public static final int DATABASE_VERSION = 1;
     SQLiteDatabase sqlDatabase;

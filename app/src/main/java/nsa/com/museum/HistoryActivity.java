@@ -25,11 +25,10 @@ public class HistoryActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        historyBeacons = getIntent().getExtras().getStringArrayList("beacons");
-        historyAdap = new ArrayAdapter(getApplicationContext(), android.R.layout.simple_list_item_1, historyBeacons);
-        historyLv = (ListView) findViewById(R.id.historyView);
-        historyLv.setAdapter(historyAdap);
-
+//        historyBeacons = getIntent().getExtras().getStringArrayList("beacons");
+//        historyAdap = new ArrayAdapter(getApplicationContext(), android.R.layout.simple_list_item_1, historyBeacons);
+//        historyLv = (ListView) findViewById(R.id.historyView);
+//        historyLv.setAdapter(historyAdap);
 
     }
 
@@ -42,9 +41,6 @@ public class HistoryActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
         switch (item.getItemId()) {
             case R.id.action_settings:
                 Intent settings = new Intent(getApplicationContext(), NewSettingsActivity.class);
@@ -61,9 +57,12 @@ public class HistoryActivity extends AppCompatActivity {
                 startActivity(login);
                 return true;
 
+            case R.id.action_home:
+                Intent home = new Intent(getApplicationContext(), MainActivity.class);
+                startActivity(home);
+                return true;
+
             default:
-                // If we got here, the user's action was not recognized.
-                // Invoke the superclass to handle it.
                 return super.onOptionsItemSelected(item);
 
         }

@@ -1,40 +1,49 @@
 package nsa.com.museum;
 
-import android.content.Context;
 import android.content.Intent;
-import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
+import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.Toast;
 
-public class HelpActivity extends AppCompatActivity {
+public class QuestionActivity extends AppCompatActivity {
 
-    Button moreHelp;
-    Context context;
+    EditText questionTitle;
+    EditText questionText;
+    Button submit;
+    MessageConnector db;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_help);
+        setContentView(R.layout.activity_question);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        moreHelp = (Button) findViewById(R.id.stillHelpButton);
-        context = getApplicationContext();
 
-        moreHelp.setOnClickListener(new View.OnClickListener() {
+        questionText = (EditText) findViewById(R.id.title);
+        questionTitle = (EditText) findViewById(R.id.question);
+        submit = (Button) findViewById(R.id.submitQuestion);
+        db = new MessageConnector(this);
+
+        submit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(getApplicationContext(), QuestionActivity.class);
-                startActivity(intent);
+                String questionTextString = questionText.getText().toString();
+                String questionTitleString = questionTitle.getText().toString();
+                questionText.setText("");
+                questionTitle.setText("");
+
+                String query = "INSERT INTO messageDetails(messageTitle, messageAnswered, messageQuestion) values ('"
+                        + questionTextString + "','" + "No" + "','" + questionTitleString + "')";
+                db.executeQuery(query);
+                Toast.makeText(getApplicationContext(), getString(R.string.flagged), Toast.LENGTH_LONG).show();
             }
         });
-
     }
 
     @Override
@@ -71,5 +80,4 @@ public class HelpActivity extends AppCompatActivity {
 
         }
     }
-
 }

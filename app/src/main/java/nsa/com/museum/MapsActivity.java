@@ -15,6 +15,8 @@ import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.common.api.GoogleApiClient.ConnectionCallbacks;
+import com.google.android.gms.common.api.GoogleApiClient.OnConnectionFailedListener;
 import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
@@ -22,6 +24,7 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.UiSettings;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
@@ -41,19 +44,28 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-public class MapsActivity extends AppCompatActivity
-        implements OnMapReadyCallback, GoogleApiClient.ConnectionCallbacks,
-        GoogleApiClient.OnConnectionFailedListener, LocationListener {
+/**===MAPS FUNCTIONALITY===
+ * Adapted using combination of Android Docs, Google Developer and Stack Overflow at the following links.
+ * Adding a map with a Marker: https://developers.google.com/maps/documentation/android-api/map-with-marker
+ * Getting the Last Known Location: https://developer.android.com/training/location/retrieve-current.html
+ * Changing Location Settings: https://developer.android.com/training/location/change-location-settings.html
+ * Receiving Location Updates: https://developer.android.com/training/location/receive-location-updates.html
+ * Current location and Google Maps: http://stackoverflow.com/questions/34582370/how-can-i-show-current-location-on-a-google-map-on-android-marshmallow/34582595#3458259
+ */
 
-    GoogleMap mGoogleMap;
+public class MapsActivity extends AppCompatActivity
+        implements OnMapReadyCallback, ConnectionCallbacks,
+        OnConnectionFailedListener, LocationListener {
+
+    GoogleMap googleMap;
     SupportMapFragment supportMapFragment;
-    LocationRequest mLocationRequest;
-    GoogleApiClient mGoogleApiClient;
-    Location mLastLocation;
-    Marker mCurrentLocationMarker;
+    LocationRequest locationRequest;
+    GoogleApiClient googleApiClient;
+    Location lastLocation;
+    Marker currentLocationMarker;
     LatLng latLng;
-    double mLatitude;
-    double mLongitude;
+    double latitude;
+    double longitude;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,106 +80,132 @@ public class MapsActivity extends AppCompatActivity
     public void onPause() {
         super.onPause();
 
-        //stop location updates when Activity is no longer active
-        if (mGoogleApiClient != null) {
-            LocationServices.FusedLocationApi.removeLocationUpdates(mGoogleApiClient, this);
+        // This method stops location updates when Activity is no longer active
+        if (googleApiClient != null) {
+            LocationServices.FusedLocationApi.removeLocationUpdates(googleApiClient, this);
         }
     }
 
+    // This method is only called when the map is ready.
     @Override
-    public void onMapReady(GoogleMap googleMap) {
-        mGoogleMap=googleMap;
+    public void onMapReady(GoogleMap cGoogleMap) {
+        this.googleMap =cGoogleMap;
 
-        //Initialize Google Play Services
+        // Initialises the Google Play Services.
         if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            // Checks if permission has already been granted.
             if (ContextCompat.checkSelfPermission(this,
                     android.Manifest.permission.ACCESS_FINE_LOCATION)
                     == PackageManager.PERMISSION_GRANTED) {
-                //Location Permission already granted
                 buildGoogleApiClient();
-                mGoogleMap.setMyLocationEnabled(true);
-            } else {
-                //Request Location Permission
+
+                // Builds the map and all UI features.
+                this.googleMap.setMyLocationEnabled(true);
+                UiSettings uiSettings = this.googleMap.getUiSettings();
+                uiSettings.setAllGesturesEnabled(true);
+                uiSettings.setMyLocationButtonEnabled(true);
+                uiSettings.setZoomControlsEnabled(true);
+            }
+            // Asks for permission if it has not been granted.
+            else {
                 checkLocationPermission();
             }
         }
         else {
+            // Builds the map and all UI features.
             buildGoogleApiClient();
-            mGoogleMap.setMyLocationEnabled(true);
+            this.googleMap.setMyLocationEnabled(true);
+            UiSettings uiSettings = this.googleMap.getUiSettings();
+            uiSettings.setAllGesturesEnabled(true);
+            uiSettings.setMyLocationButtonEnabled(true);
+            uiSettings.setZoomControlsEnabled(true);
         }
     }
 
+    /** This method builds and connects the Google API Client  between the
+     *  user's device and the Google services required for this app. I.E.
+     *  Google's Location Services.
+     */
     protected synchronized void buildGoogleApiClient() {
-        mGoogleApiClient = new GoogleApiClient.Builder(this)
+        googleApiClient = new GoogleApiClient.Builder(this)
                 .addConnectionCallbacks(this)
                 .addOnConnectionFailedListener(this)
                 .addApi(LocationServices.API)
                 .build();
-        mGoogleApiClient.connect();
+        googleApiClient.connect();
     }
 
+    /** This method is initialised when the Google API Client has been connected.
+     *  It creates a new location request to Google Play Services and the data
+     *  provided is stored in the bundle.
+     */
     @Override
     public void onConnected(Bundle bundle) {
-        mLocationRequest = new LocationRequest();
-        mLocationRequest.setInterval(1000);
-        mLocationRequest.setFastestInterval(1000);
-        mLocationRequest.setPriority(LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY);
+        locationRequest = new LocationRequest();
+        locationRequest.setInterval(1000);
+        locationRequest.setFastestInterval(1000);
+        locationRequest.setPriority(LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY);
         if (ContextCompat.checkSelfPermission(this,
                 android.Manifest.permission.ACCESS_FINE_LOCATION)
                 == PackageManager.PERMISSION_GRANTED) {
-            LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient, mLocationRequest, this);
+            LocationServices.FusedLocationApi.requestLocationUpdates(googleApiClient, locationRequest, this);
         }
     }
 
+    // Generated method from implementing ConnectionCallbacks
     @Override
     public void onConnectionSuspended(int i) {}
 
+    // Generated method from implementing ConnectionCallbacks
     @Override
     public void onConnectionFailed(ConnectionResult connectionResult) {}
 
+    // Called when the user's location has changed.
     @Override
     public void onLocationChanged(Location location) {
-        mLastLocation = location;
-        if (mCurrentLocationMarker != null) {
-            mCurrentLocationMarker.remove();
+        lastLocation = location;
+        // Removes current marker if it exists as it is no longer accurate.
+        if (currentLocationMarker != null) {
+            currentLocationMarker.remove();
         }
 
-        //Place current location marker
-        mLatitude = location.getLatitude();
-        mLongitude = location.getLongitude();
-        LatLng latLng = new LatLng(mLatitude, mLongitude);
+        //Places a new current location marker in the new position.
+        latitude = location.getLatitude();
+        longitude = location.getLongitude();
+        latLng = new LatLng(latitude, longitude);
         MarkerOptions markerOptions = new MarkerOptions();
         markerOptions.position(latLng);
         markerOptions.title("You are here");
-        mCurrentLocationMarker = mGoogleMap.addMarker(markerOptions);
+        currentLocationMarker = googleMap.addMarker(markerOptions);
 
-        //move map camera
-        mGoogleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng,11));
+        // Triggers the map to focus on the new location.
+        googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng,11));
 
-        //optionally, stop location updates if only current location is needed
-        if (mGoogleApiClient != null) {
-            LocationServices.FusedLocationApi.removeLocationUpdates(mGoogleApiClient, this);
-        }
-        StringBuilder sbValue = new StringBuilder(sbMethod());
+        /** Creates a new string builder passing it the results of the
+         *  string builder method. This is used to find information about
+         *  museums in the local area.
+         */
+        StringBuilder stringBuilder = new StringBuilder(sbMethod());
         PlacesTask placesTask = new PlacesTask();
-        placesTask.execute(sbValue.toString());
+        placesTask.execute(stringBuilder.toString());
     }
 
+    // Checks for location permissions required to run this section of the app.
     public static final int MY_PERMISSIONS_REQUEST_LOCATION = 200;
     private void checkLocationPermission() {
         if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION)
                 != PackageManager.PERMISSION_GRANTED) {
 
-            // Should we show an explanation?
             if (ActivityCompat.shouldShowRequestPermissionRationale(this,
                     android.Manifest.permission.ACCESS_FINE_LOCATION)) {
 
-                // Show an explanation to the user *asynchronously* -- don't block
-                // this thread waiting for the user's response! After the user
-                // sees the explanation, try again to request the permission.
+                /** The code below creates an alert to the user explaining the need
+                 *  for location permissions should they refuse, and then asks them
+                 *  for the permission again.
+                 */
                 new AlertDialog.Builder(this)
-                        .setTitle("Location Permission Needed")
-                        .setMessage("This app needs the Location permission, please accept to use location functionality")
+                        .setTitle("Location Permission Required")
+                        .setMessage("This app needs the Location permission to find your current location, please accept or this functionality will not work.")
                         .setPositiveButton("OK", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialogInterface, int i) {
@@ -181,13 +219,14 @@ public class MapsActivity extends AppCompatActivity
 
 
             } else {
-                // No explanation needed, we can request the permission.
+                // No alert is needed so permission is requested.
                 ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION},
                         MY_PERMISSIONS_REQUEST_LOCATION );
             }
         }
     }
 
+    // This method deals with all potential outcomes of requesting permissions.
     @Override
     public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
         switch (requestCode) {
@@ -196,35 +235,34 @@ public class MapsActivity extends AppCompatActivity
                 if (grantResults.length > 0
                         && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
 
-                    // permission was granted, yay! Do the
-                    // location-related task you need to do.
+                    // Permission was granted meaning maps can be used.
                     if (ContextCompat.checkSelfPermission(this,
                             android.Manifest.permission.ACCESS_FINE_LOCATION)
                             == PackageManager.PERMISSION_GRANTED) {
 
-                        if (mGoogleApiClient == null) {
+                        if (googleApiClient == null) {
                             buildGoogleApiClient();
                         }
-                        mGoogleMap.setMyLocationEnabled(true);
+                        googleMap.setMyLocationEnabled(true);
                     }
 
                 } else {
 
-                    // permission denied, boo! Disable the
-                    // functionality that depends on this permission.
+                    // Permission was denied, so the user is presented with a toast. Maps will not work.
                     Toast.makeText(this, "Sorry, permission denied.", Toast.LENGTH_LONG).show();
                 }
                 return;
             }
-
-            // other 'case' lines to check for other
-            // permissions this app might request
         }
     }
 
+    /** This is the string builder method used to create a filter for nearby
+     *  places to the current location. The below filter defines that all
+     *  museums within 20km of the current location must be shown on the map.
+     */
     public StringBuilder sbMethod() throws SecurityException {
         StringBuilder sb = new StringBuilder("https://maps.googleapis.com/maps/api/place/nearbysearch/json?");
-        sb.append("location=" + mLatitude + "," + mLongitude);
+        sb.append("location=" + latitude + "," + longitude);
         sb.append("&radius=20000");
         sb.append("&types=" + "museum");
         sb.append("&sensor=true");
@@ -235,6 +273,9 @@ public class MapsActivity extends AppCompatActivity
         return sb;
     }
 
+    /** All below methods until end of file referenced from:
+     * http://stackoverflow.com/questions/33971717/mapactivity-query-for-nearest-hospital-restaurant-not-working?noredirect=1&lq=1
+     */
     private class PlacesTask extends AsyncTask<String, Integer, String>
     {
 
@@ -329,7 +370,7 @@ public class MapsActivity extends AppCompatActivity
 
             Log.d("Map", "list size: " + list.size());
             // Clears all the existing markers;
-            //mGoogleMap.clear();
+            //googleMap.clear();
 
             for (int i = 0; i < list.size(); i++) {
 
@@ -364,20 +405,18 @@ public class MapsActivity extends AppCompatActivity
                 markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_ORANGE));
 
                 // Placing a marker on the touched position
-                Marker m = mGoogleMap.addMarker(markerOptions);
+                Marker m = googleMap.addMarker(markerOptions);
             }
         }
     }
     public class Place_JSON {
 
-        /**
-         * Receives a JSONObject and returns a list
-         */
+        // Receives a JSONObject and returns a list
         public List<HashMap<String, String>> parse(JSONObject jObject) {
 
             JSONArray jPlaces = null;
             try {
-                /** Retrieves all the elements in the 'places' array */
+                // Retrieves all the elements in the 'places' array */
                 jPlaces = jObject.getJSONArray("results");
             } catch (JSONException e) {
                 e.printStackTrace();
@@ -393,10 +432,10 @@ public class MapsActivity extends AppCompatActivity
             List<HashMap<String, String>> placesList = new ArrayList<HashMap<String, String>>();
             HashMap<String, String> place = null;
 
-            /** Taking each place, parses and adds to list object */
+            // Taking each place, parses and adds to list object */
             for (int i = 0; i < placesCount; i++) {
                 try {
-                    /** Call getPlace with place JSON object to parse the place */
+                    // Call getPlace with place JSON object to parse the place */
                     place = getPlace((JSONObject) jPlaces.get(i));
                     placesList.add(place);
                 } catch (JSONException e) {
@@ -406,9 +445,7 @@ public class MapsActivity extends AppCompatActivity
             return placesList;
         }
 
-        /**
-         * Parsing the Place JSON object
-         */
+        //Parsing the Place JSON object
         private HashMap<String, String> getPlace(JSONObject jPlace)
         {
 

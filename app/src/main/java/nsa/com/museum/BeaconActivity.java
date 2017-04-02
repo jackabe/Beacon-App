@@ -3,9 +3,16 @@ import android.Manifest;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.BitmapShader;
+import java.lang.Object;
 import android.net.Uri;
 import android.os.Build;
+import android.os.Process;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AlertDialog;
@@ -19,91 +26,136 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 import com.gcell.ibeacon.gcellbeaconscanlibrary.GCellBeaconManagerScanEvents;
 import com.gcell.ibeacon.gcellbeaconscanlibrary.GCellBeaconRegion;
 import com.gcell.ibeacon.gcellbeaconscanlibrary.GCellBeaconScanManager;
 import com.gcell.ibeacon.gcellbeaconscanlibrary.GCelliBeacon;
+
+import org.w3c.dom.Text;
+
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InterruptedIOException;
+import java.sql.Blob;
 import java.util.ArrayList;
 import java.util.List;
 public class BeaconActivity extends AppCompatActivity implements GCellBeaconManagerScanEvents {
     GCellBeaconScanManager scanMan;
-    ListView lv;
-    ArrayAdapter beaconAdap;
-    ArrayList<String> beacontest = new ArrayList<>();
     ArrayList<String> historyBeacons = new ArrayList<>();
+    DBBeacon db;
+
+    CustomBeaconAdapter beaconAdapter;
+    ArrayList<Beacons> beaconsArrayList;
+    Beacons beaconsListItems;
+    ListView lv;
+    String aBeacon;
+    ArrayList<String> beacons;
+    String museumCity;
+
     int PERM_CODE = 101;
-    String[] permissions = new String[]{Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.BLUETOOTH, Manifest.permission.BLUETOOTH_ADMIN};
+//    String[] permissions = new String[]{Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.BLUETOOTH, Manifest.permission.BLUETOOTH_ADMIN};
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_beacon);
-        lv = (ListView) findViewById(R.id.beaconsLv);
-        //Handle Permissions
-        checkPermissions();
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        //Create adapter for beacons
-        beaconAdap = new ArrayAdapter(getApplicationContext(), android.R.layout.simple_list_item_1, beacontest);
-        lv.setAdapter(beaconAdap);
-        // Simulating beacons in the LV for when working outside away from NSA
-        beacontest.add("6466346446223");
-        beacontest.add("90090990800");
-        beacontest.add("473474242446");
-        beaconAdap.notifyDataSetChanged();
-        //Create a manager with the application context
+
+        // Check which museum they click on, it is sotred in the sp.
+        SharedPreferences museum = getSharedPreferences("museum", 0);
+        museumCity = museum.getString("museum", "museum");
+
+        lv = (ListView) findViewById(R.id.beaconsLv);
+        beaconsArrayList = new ArrayList<>();
+        db = new DBBeacon(this);
+        beacons = new ArrayList<>();
+
         scanMan = new GCellBeaconScanManager(this);
         scanMan.enableBlueToothAutoSwitchOn(true);
-        //Start a scan
         scanMan.startScanningForBeacons();
-        lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                Toast.makeText(getApplicationContext(), beaconAdap.getItem(i).toString(), Toast.LENGTH_SHORT).show();
-                if (beacontest.get(i) == "90090990800") {
-                    Uri x = Uri.parse("https://rhp.avoqr.eu/en/musicians");
-                    Intent launchBrowser = new Intent(Intent.ACTION_VIEW, x);
-                    startActivity(launchBrowser);
-                } else if (beacontest.get(i) == "473474242446") {
-                    Uri x = Uri.parse("http://rhp.avoqr.eu/en/majesty");
-                    Intent launchBrowser = new Intent(Intent.ACTION_VIEW, x);
-                    startActivity(launchBrowser);
-                }
-            }
-        });
-        lv.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
-            @Override
-            public boolean onItemLongClick(AdapterView<?> arg0, View view, int i, long l) {
-                AlertDialog.Builder builder = new AlertDialog.Builder(BeaconActivity.this);
-                builder.setTitle("Options");
-                final String item = beaconAdap.getItem(i).toString();
-                builder.setItems(new String[]{"Add to history", "Cancel"}, new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int which) {
-                        switch (which) {
-                            case 0:
-                                Toast.makeText(getApplicationContext(), item + " Added to history", Toast.LENGTH_SHORT).show();
-                                historyBeacons.add(item);
-                                Intent intent = new Intent(getBaseContext(), HistoryActivity.class);
-                                intent.putStringArrayListExtra("beacons", historyBeacons);
-                                beaconAdap.notifyDataSetChanged();
-                                startActivity(intent);
-                                break;
-                            case 1:
-                                break;
-                        }
-                    }
-                });
-                builder.show();
-                return false;
-            }
-        });
+
+        // Coverting all the images to insert into the database from png's to bitmaps to bytes.
+        // Code here referenced from http://stackoverflow.com/questions/20700181/convert-imageview-in-bytes-android.
+        Bitmap majesty = BitmapFactory.decodeResource(getResources(), R.drawable.abby);
+        Bitmap mad = BitmapFactory.decodeResource(getResources(), R.drawable.mad);
+        Bitmap beatles = BitmapFactory.decodeResource(getResources(), R.drawable.beatles);
+        byte[] beatlesByte = SetImage.getBytes(beatles);
+        byte[] madByte = SetImage.getBytes(mad);
+        byte[] majestysByte = SetImage.getBytes(majesty);
+
+//        String delQuery = "DELETE FROM beaconDetails WHERE beaconId='"+"3FC5BB15-5FAF-4505-BDC8-A49DD6C19A45"+"' ";
+//        db.executeQuery(delQuery);
+//        String del2 = "DELETE FROM beaconDetails WHERE beaconId='"+"96530D4D-09AF-4159-B99E-951A5E826584"+"' ";
+//        db.executeQuery(del2);
+//        String del3 = "DELETE FROM beaconDetails WHERE beaconId='"+"01E82601-8329-4BD6-A126-8A17B03D55EC"+"' ";
+//        db.executeQuery(del3);
+
+        db.insert("3FC5BB15-5FAF-4505-BDC8-A49DD6C1", "Cardiff", "Majesty", "http://rhp.avoqr.eu/en/majesty", majestysByte);
+        db.insert("96530D4D-09AF-4159-B99E-951A5E826584", "Cardiff", "Madeleine Peyroux", "www.thebeatles.com", madByte);
+        db.insert("01E82601-8329-4BD6-A126-8A17B03D55EC", "Cardiff", "The Beatles", "www.thebeatles.com", beatlesByte);
     }
+
     @Override
     public void onGCellUpdateBeaconList(List<GCelliBeacon> list) {
         for (GCelliBeacon beacon : list) {
-            if (beaconAdap.getPosition(beacon.getProxUuid().getStringFormattedUuid()) == -1) {
-                beaconAdap.add(beacon.getProxUuid().getStringFormattedUuid());
+
+            String theBeacon = beacon.getProxUuid().getStringFormattedUuid();
+
+            // Code referenced from the source http://androidtuts4u.blogspot.co.uk/2013/02/android-list-view-using-custom-adapter.html.
+
+            // Check if the beacon found has already been seen and is a valid one from the database.
+            // Get the beacon id and compared it with all in database.
+            // Create new cursor and select all rows from the table
+            // Set each value we want from the database show in our list adapter.
+            // Add the array list contaning these values to the custom list adapter.
+
+            if (!beacons.contains(theBeacon)) {
+                aBeacon = theBeacon;
+                beacons.add(aBeacon);
+                Log.i("BeaconAddedToList", "Beacon added to list" + "");
+                String checkIfIn = "SELECT beaconId FROM beaconDetails WHERE beaconId='" + aBeacon + "' ";
+                Cursor c2 = db.selectQuery(checkIfIn);
+
+                if (c2.getCount() == 0) {
+                    Log.i("NotIn", "not in database" + "");
+                    beaconsArrayList.clear();
+                    c2.close();
+                }
+
+                else {
+                    String check = "SELECT * FROM beaconDetails WHERE beaconId='" + aBeacon + "WHERE museumId='" + museumCity + "' ";
+                    Cursor c1 = db.selectQuery(check);
+                    if (c1 != null && c1.getCount() != 0) {
+                        if (c1.moveToFirst()) {
+                            do {
+
+                                beaconsListItems = new Beacons();
+                                beaconsListItems.setBeaconId(c1.getString(c1
+                                        .getColumnIndex("beaconId")));
+                                beaconsListItems.setObjectName(c1.getString(c1
+                                        .getColumnIndex("objectName")));
+                                beaconsListItems.setUrl(c1.getString(c1
+                                        .getColumnIndex("url")));
+                                byte[] b = c1.getBlob(c1.getColumnIndex("objectImage"));
+                                beaconsListItems.setImage(c1.getBlob(c1
+                                        .getColumnIndex("objectImage")));
+
+                                beaconsArrayList.add(beaconsListItems);
+
+                            } while (c1.moveToNext());
+                        }
+                        beaconAdapter = new CustomBeaconAdapter(
+                                BeaconActivity.this, beaconsArrayList);
+                        lv.setAdapter(beaconAdapter);
+                    }
+                }
+            } else if (beacons.contains(theBeacon)) {
+                aBeacon = theBeacon;
             }
+
         }
     }
     /**
@@ -131,9 +183,9 @@ public class BeaconActivity extends AppCompatActivity implements GCellBeaconMana
     }
     public void checkPermissions() {
         //Request permission if ANY permissions have been denied
-        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && !hasPermissions(getApplicationContext(), permissions)) {
-            ActivityCompat.requestPermissions(this, permissions, PERM_CODE);
-        }
+//        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && !hasPermissions(getApplicationContext(), permissions)) {
+//            ActivityCompat.requestPermissions(this, permissions, PERM_CODE);
+//        }
     }
     /**
      * Iterate through all permissions provided and ensure all have been approved
@@ -203,10 +255,15 @@ public class BeaconActivity extends AppCompatActivity implements GCellBeaconMana
                 Intent login = new Intent(getApplicationContext(), AdminLogin.class);
                 startActivity(login);
                 return true;
+            case R.id.action_home:
+                Intent home = new Intent(getApplicationContext(), MainActivity.class);
+                startActivity(home);
+                return true;
             default:
                 // If we got here, the user's action was not recognized.
                 // Invoke the superclass to handle it.
                 return super.onOptionsItemSelected(item);
         }
     }
+
 }

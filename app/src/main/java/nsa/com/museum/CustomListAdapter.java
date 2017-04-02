@@ -1,36 +1,56 @@
 package nsa.com.museum;
 
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.List;
 
 import android.content.Context;
+import android.content.Intent;
+import android.content.SharedPreferences;
+import android.graphics.Color;
+import android.provider.SyncStateContract;
+import android.support.design.widget.Snackbar;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.Filter;
+import android.widget.Filterable;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 public class CustomListAdapter extends BaseAdapter {
 
     Context context;
-    ArrayList<Museums> contactList;
+    ArrayList<Museums> museumList;
+    ArrayList<Museums> filterList;
+    int open;
+    int close;
+    Calendar time;
+    int currentHour;
+    String museumCity;
+
+    // Code referenced from the source http://androidtuts4u.blogspot.co.uk/2013/02/android-list-view-using-custom-adapter.html.
 
     public CustomListAdapter(Context context, ArrayList<Museums> list) {
 
         this.context = context;
-        contactList = list;
+        museumList = list;
+        this.filterList = museumList;
     }
 
     @Override
     public int getCount() {
 
-        return contactList.size();
+        return museumList.size();
     }
 
     @Override
     public Object getItem(int position) {
 
-        return contactList.get(position);
+        return museumList.get(position);
     }
 
     @Override
@@ -41,7 +61,7 @@ public class CustomListAdapter extends BaseAdapter {
 
     @Override
     public View getView(int position, View convertView, ViewGroup arg2) {
-        Museums contactListItems = contactList.get(position);
+        Museums museumListContent = museumList.get(position);
 
         if (convertView == null) {
             LayoutInflater inflater = (LayoutInflater) context
@@ -49,16 +69,52 @@ public class CustomListAdapter extends BaseAdapter {
             convertView = inflater.inflate(R.layout.list_row, null);
 
         }
-        TextView museumName = (TextView) convertView.findViewById(R.id.title);
-        museumName.setText(contactListItems.getMuseumCity());
+        final TextView museumName = (TextView) convertView.findViewById(R.id.title);
+        museumName.setText(museumListContent.getMuseumCity());
         TextView museumOpen = (TextView) convertView.findViewById(R.id.open);
-        museumOpen.setText("Opens at: " + contactListItems.getMuseumOpen());
         TextView museumClose = (TextView) convertView.findViewById(R.id.close);
-        museumClose.setText("Closes at: " + contactListItems.getMuseumClose());
-
+        museumOpen.setText("Opens at: " + museumListContent.getMuseumOpen());
+        museumClose.setText("Closes at: " + museumListContent.getMuseumClose());
         ImageView image = (ImageView) convertView.findViewById(R.id.icon);
         image.setImageResource(R.mipmap.icon);
+        TextView state = (TextView) convertView.findViewById(R.id.state);
+        open = museumListContent.getMuseumOpen();
+        close = museumListContent.getMuseumClose();
 
+        // get the hour of day, 1-24.
+        time = Calendar.getInstance();
+        currentHour = time.get(Calendar.HOUR_OF_DAY);
+
+        // Check if the user is open open or not by comparing current time with open and close in database.
+        if (currentHour > open) {
+            state.setText("Open");
+            state.setTextColor(Color.parseColor("#006600"));
+        }
+
+        else if (currentHour < open) {
+            state.setText("Closed");
+            state.setTextColor(Color.parseColor("#cc0000"));
+        }
+
+        else {
+            state.setText("Closed");
+            state.setTextColor(Color.RED);
+        }
+
+        convertView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Add museum clicked to sp
+                museumCity = museumName.getText().toString();
+                SharedPreferences museum = context.getSharedPreferences("museum", context.MODE_PRIVATE);
+                SharedPreferences.Editor edit = museum.edit();
+                edit.putString("museum", museumCity);
+                edit.commit();
+                Intent beacons = new Intent(context, BeaconActivity.class);
+                context.startActivity(beacons);
+                Toast.makeText(context, museumCity + " " + context.getString(R.string.museum_loaded), Toast.LENGTH_SHORT).show();
+            }
+        });
         return convertView;
     }
 

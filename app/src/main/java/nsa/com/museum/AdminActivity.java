@@ -36,6 +36,7 @@ public class AdminActivity extends AppCompatActivity {
     EditText addName;
     EditText addLink;
     Button addBeacon;
+    Button deleteBeacon;
 
     String city;
     String open;
@@ -44,6 +45,8 @@ public class AdminActivity extends AppCompatActivity {
     String name;
     String link;
     DBConnector db;
+
+    Button messages;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,8 +66,18 @@ public class AdminActivity extends AppCompatActivity {
         addName = (EditText) findViewById(R.id.addName);
         addLink = (EditText) findViewById(R.id.addLink);
         addBeacon = (Button) findViewById(R.id.addBeacon);
+        deleteBeacon = (Button) findViewById(R.id.deleteBeacon);
+        messages = (Button) findViewById(R.id.messages);
 
         db = new DBConnector(this);
+
+        messages.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getApplicationContext(), MessageCenterActivity.class);
+                startActivity(intent);
+            }
+        });
 
         addMuseum.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -96,23 +109,27 @@ public class AdminActivity extends AppCompatActivity {
         addBeacon.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-//                beaconId = addId.getText().toString();
-//                name = addName.getText().toString();
-//                link = addLink.getText().toString();
-//                ImageView image = (ImageView) findViewById(R.id.objectIcon);
-//
-//                image.setDrawingCacheEnabled(true);
-//                image.buildDrawingCache();
-//                Bitmap bm = image.getDrawingCache();
-//                ByteArrayOutputStream stream = new ByteArrayOutputStream();
-//                bm.compress(Bitmap.CompressFormat.PNG, 100, stream);
-//                byte[] byteArray = stream.toByteArray();
-//
-//                db.addBeacon(beaconId, name, link, byteArray);
-//                Snackbar snackbar = Snackbar
-//                        .make(v, name + " added to database", Snackbar.LENGTH_LONG);
-//                snackbar.show();
-//                db.getMuseums("london");
+                name = addId.getText().toString();
+                beaconId = addName.getText().toString();
+                link = addLink.getText().toString();
+                String query = "INSERT INTO beaconDetails(beaconId, objectName, url) values ('"
+                        + beaconId + "','" + name + "','" + link + "')";
+                db.executeQuery(query);
+                addId.setText("");
+                addName.setText("");
+                addLink.setText("");
+                Toast.makeText(getApplicationContext(), name + " added to database", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        deleteBeacon.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                name = addName.getText().toString();
+                String delQuery = "DELETE FROM beaconDetails WHERE objectName='"+name+"' ";
+                db.executeQuery(delQuery);
+                addName.setText("");
+                Toast.makeText(getApplicationContext(), name + " deleted from database", Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -126,9 +143,6 @@ public class AdminActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
         switch (item.getItemId()) {
             case R.id.action_settings:
                 Intent settings = new Intent(getApplicationContext(), NewSettingsActivity.class);
@@ -146,8 +160,6 @@ public class AdminActivity extends AppCompatActivity {
                 return true;
 
             default:
-                // If we got here, the user's action was not recognized.
-                // Invoke the superclass to handle it.
                 return super.onOptionsItemSelected(item);
 
         }

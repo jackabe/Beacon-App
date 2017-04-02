@@ -13,6 +13,16 @@ public class Museums {
     int museumOpen;
     int museumClose;
 
+    public Museums() {
+
+    }
+
+    public Museums(String museumCity, int museumOpen, int museumClose) {
+        this.museumCity = museumCity;
+        this.museumOpen = museumOpen;
+        this.museumClose = museumClose;
+    }
+
     public int getMuseumId() {
         return museumId;
     }
@@ -44,11 +54,5 @@ public class Museums {
     public void setMuseumClose(int museumClose) {
         this.museumClose = museumClose;
     }
-
-//    public Museums(String museumCity, int museumOpen, int museumClose) {
-//        this.museumCity = museumCity;
-//        this.museumOpen = museumOpen;
-//        this.museumClose = museumClose;
-//    }
 
 }

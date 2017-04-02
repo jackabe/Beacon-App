@@ -9,7 +9,7 @@
         android:layout_width="200dp"
         android:layout_height="100dp"
         android:layout_marginTop="20dp"
-        android:layout_marginLeft="20dp"
+        android:layout_marginLeft="5dp"
         android:padding="5dp" />
 
 
@@ -18,11 +18,20 @@
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:text="The Beatles"
-        android:layout_marginTop="50dp"
-        android:layout_marginLeft="10dp"
+        android:layout_marginTop="35dp"
+        android:layout_marginLeft="5dp"
         android:id="@+id/name"/>
 
-
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:text="@string/hold"
+        android:layout_marginTop="70dp"
+        android:layout_marginLeft="-105dp"
+        android:id="@+id/info"
+        android:maxLines="1"
+        android:textSize="15dp" />
 
     <LinearLayout android:layout_width="wrap_content"
         android:layout_height="wrap_content"

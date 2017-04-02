@@ -3,10 +3,18 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:context="nsa.com.museum.MainActivity">
 
+    <!-- XML file that sets our toolbar menu layout -->
+
     <item
         android:id="@+id/action_help"
         android:icon="@mipmap/ic_announcement_white_24dp"
         android:title="@string/action_help"
+        app:showAsAction="ifRoom"/>
+
+    <item
+        android:id="@+id/action_home"
+        android:icon="@mipmap/home_24"
+        android:title="@string/action_home"
         app:showAsAction="ifRoom"/>
 
     <item

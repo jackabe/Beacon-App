@@ -12,6 +12,8 @@ public class DBBeacon {
     SQLiteDatabase database;
     ItemsDBHelper db;
 
+    // Code referenced from the source http://androidtuts4u.blogspot.co.uk/2013/02/android-list-view-using-custom-adapter.html.
+
     public DBBeacon(Context context) {
 
         db = new ItemsDBHelper(context, DATABASE_NAME, null,
@@ -56,14 +58,16 @@ public class DBBeacon {
 
     }
 
-    public void insert(String objId, String objName, String url, byte[] img) {
+    public void insert(String objId, String museumId, String objName, String url, byte[] img) {
         SQLiteDatabase d = db.getWritableDatabase();
         ContentValues cv = new ContentValues();
         cv.put("beaconId", objId);
+        cv.put("museumId", museumId);
         cv.put("objectName", objName);
         cv.put("url", url);
         cv.put("objectImage", img);
         d.insert(ItemsDBHelper.TABLE_BEACON_DETAILS, null, cv);
     }
+
 
 }

@@ -9,17 +9,21 @@ public class Beacons {
     String objectName;
     String url;
     byte[] image;
+    String museumId;
 
     public Beacons() {
 
     }
 
+    // get and setters for beacons.
+    // non empty constructor isn't called as i made it for the ease of generating getters and setters.
 
-    public Beacons(String beaconId, String objectName, String url, byte[] image) {
+    public Beacons(String beaconId, String objectName, String url, String museumId, byte[] image) {
         this.beaconId = beaconId;
         this.objectName = objectName;
         this.url = url;
         this.image = image;
+        this.museumId = museumId;
     }
 
     public String getBeaconId() {
@@ -44,6 +48,14 @@ public class Beacons {
 
     public void setUrl(String url) {
         this.url = url;
+    }
+
+    public String getMuseumId() {
+        return museumId;
+    }
+
+    public void setMuseumId(String museumId) {
+        this.museumId = museumId;
     }
 
     public byte[] getImage() {

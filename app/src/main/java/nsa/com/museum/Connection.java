@@ -20,6 +20,7 @@ public class Connection extends AppCompatActivity {
         setSupportActionBar(toolbar);
         continueButton = (Button) findViewById(R.id.continueButton);
 
+        // Add to shared preferences that they have seen this page.
         continueButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

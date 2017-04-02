@@ -54,7 +54,6 @@ import com.gcell.ibeacon.gcellbeaconscanlibrary.GCelliBeacon;
 public class MainActivity extends AppCompatActivity implements GCellBeaconManagerScanEvents {
 
     GCellBeaconScanManager scanMan;
-    ArrayAdapter beaconAdap;
     int dID;
     DBConnector db;
     EditText cityInput;
@@ -64,15 +63,12 @@ public class MainActivity extends AppCompatActivity implements GCellBeaconManage
     CustomListAdapter listAdapter;
     ArrayList<Museums> museumsArrayList;
     Museums museumListItems;
-    CustomBeaconAdapter beaconAdapter;
     ArrayList<Beacons> beaconsArrayList;
-    Beacons beaconsListItems;
     String aBeacon;
     ArrayList<String> beacons;
     TextView connection;
     int counter;
-//    SearchView view;
-
+    InternetConnection internetConnection;
 
     int PERM_CODE = 101;
     String[] permissions = new String[]{Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.BLUETOOTH, Manifest.permission.BLUETOOTH_ADMIN};
@@ -81,18 +77,17 @@ public class MainActivity extends AppCompatActivity implements GCellBeaconManage
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        // Load in our toolbar
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         checkPermissions();
 
-//        view = (SearchView) findViewById(R.id.hello);
+        // initialise all our fields
         cityInput = (EditText) findViewById(R.id.editSearch);
-        searchBtn = (Button)findViewById(R.id.searchBtn);
+        searchBtn = (Button) findViewById(R.id.searchBtn);
         museumsList = (ListView) findViewById(R.id.museumsList);
         findBtn = (Button) findViewById(R.id.findBtn);
-        beaconAdap = new ArrayAdapter<>(getApplicationContext(),android.R.layout.simple_list_item_1);
         db = new DBConnector(this);
-
         scanMan = new GCellBeaconScanManager(this);
         scanMan.enableBlueToothAutoSwitchOn(true);
         scanMan.startScanningForBeacons();
@@ -101,22 +96,29 @@ public class MainActivity extends AppCompatActivity implements GCellBeaconManage
         connection = (TextView) findViewById(R.id.connection);
         beacons = new ArrayList<>();
 
+        // Check if the user has already seen the no connection page
         SharedPreferences connectionPref = getSharedPreferences("connection", 0);
         counter = connectionPref.getInt("connected", 0);
 
-        if (isConnected()) {
+        // Check if user has internet and set the text to show if they are
+        internetConnection = new InternetConnection();
+        if (internetConnection.isConnected()) {
             connection.setText("Internet Connected");
-        }
-
-        else {
+        } else {
             connection.setText("No Internet");
 
-            if (counter < 1 ) {
+            if (counter < 1) {
+                // Counter is how many times they have seen it
                 Intent noConnection = new Intent(getApplicationContext(), Connection.class);
                 startActivity(noConnection);
             }
         }
 
+        // Code referenced from the source http://androidtuts4u.blogspot.co.uk/2013/02/android-list-view-using-custom-adapter.html.
+
+        // Create new cursor and select all rows from the table
+        // Set each value we want from the database show in our list adapter.
+        // Add the array list contaning these values to the custom list adapter.
         museumsArrayList = new ArrayList<>();
         museumsArrayList.clear();
         final String query = "SELECT * FROM museumDetails ";
@@ -125,7 +127,7 @@ public class MainActivity extends AppCompatActivity implements GCellBeaconManage
             if (c1.moveToFirst()) {
                 Log.i("DB", c1.getInt(c1.getColumnIndex("museumOpen")) + "");
 
-            Log.i("DB", c1.getColumnCount() + "");
+                Log.i("DB", c1.getColumnCount() + "");
 
                 do {
                     museumListItems = new Museums();
@@ -151,13 +153,16 @@ public class MainActivity extends AppCompatActivity implements GCellBeaconManage
         searchBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                // Get edittext to string
                 String city = cityInput.getText().toString();
+                // Check if input is empty and dosn't contain a letter.
                 if (city.contains("") & !city.matches("[a-zA-Z]+")) {
                     Toast.makeText(getApplicationContext(), getString(R.string.empty), Toast.LENGTH_SHORT).show();
                 } else {
-                    String firstLetter = city.substring(0, 1).toUpperCase();
-                    String restLetters = city.substring(1).toLowerCase();
-                    String capitalisedCity = firstLetter + restLetters;
+                    // Capital letter code referenced from http://www.java2s.com/Tutorial/Java/0040__Data-Type/Makesthefirstlettercapsandtherestlowercase.htm.
+                    String letter1 = city.substring(0, 1).toUpperCase();
+                    String letter2 = city.substring(1).toLowerCase();
+                    String capitalisedCity = letter1 + letter2;
                     museumsArrayList.clear();
                     museumsArrayList = new ArrayList<>();
                     final String query = "SELECT * FROM museumDetails WHERE museumCity='" + capitalisedCity + "' ";
@@ -186,11 +191,12 @@ public class MainActivity extends AppCompatActivity implements GCellBeaconManage
                             MainActivity.this, museumsArrayList);
                     museumsList.setAdapter(listAdapter);
 
-
+                    // Set city input clear and hide keyboard.
                     ((EditText) findViewById(R.id.editSearch)).setText(" ");
                     InputMethodManager inputManager = (InputMethodManager)
                             getSystemService(Context.INPUT_METHOD_SERVICE);
 
+                    // Hide keybaord found on http://www.java2s.com/Tutorial/Java/0040__Data-Type/Makesthefirstlettercapsandtherestlowercase.htm
                     inputManager.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(),
                             InputMethodManager.HIDE_NOT_ALWAYS);
                 }
@@ -226,6 +232,7 @@ public class MainActivity extends AppCompatActivity implements GCellBeaconManage
         NotificationManager mNotificationManager = (NotificationManager) ctx.getSystemService(Context.NOTIFICATION_SERVICE);
         mNotificationManager.notify(id, notifBuilder.build());
     }
+
     //TODO 3 add a click listener to the dismiss button to hide any notification that is showing
     public void dismissNotification(int id) {
         NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
@@ -241,9 +248,8 @@ public class MainActivity extends AppCompatActivity implements GCellBeaconManage
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
+        // Handles the users choice
+        // Each chase is a new intent
         switch (item.getItemId()) {
             case R.id.action_settings:
                 Intent settings = new Intent(getApplicationContext(), NewSettingsActivity.class);
@@ -266,17 +272,19 @@ public class MainActivity extends AppCompatActivity implements GCellBeaconManage
                 return true;
 
             default:
-                // If we got here, the user's action was not recognized.
-                // Invoke the superclass to handle it.
+                // If action not recognised.
                 return super.onOptionsItemSelected(item);
 
         }
 
     }
+
     @Override
     public void onGCellUpdateBeaconList(List<GCelliBeacon> list) {
         for (GCelliBeacon beacon : list) {
-
+            // Check if beacon in list
+            // If not notify user theres a new beacon
+            // First check if it is a valid beacon in the database.
             String theBeacon = beacon.getProxUuid().getStringFormattedUuid();
 
             if (!beacons.contains(theBeacon)) {
@@ -298,6 +306,7 @@ public class MainActivity extends AppCompatActivity implements GCellBeaconManage
 
     /**
      * Ignore ALL of the methods below
+     *
      * @param gCellBeaconRegion
      */
 
@@ -333,13 +342,14 @@ public class MainActivity extends AppCompatActivity implements GCellBeaconManage
 
     public void checkPermissions() {
         //Request permission if ANY permissions have been denied
-        if(android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && !hasPermissions(getApplicationContext(), permissions)) {
+        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && !hasPermissions(getApplicationContext(), permissions)) {
             ActivityCompat.requestPermissions(this, permissions, PERM_CODE);
         }
     }
 
     /**
      * Iterate through all permissions provided and ensure all have been approved
+     *
      * @param context
      * @param permissions
      * @return
@@ -357,6 +367,7 @@ public class MainActivity extends AppCompatActivity implements GCellBeaconManage
 
     /**
      * Called when the user has dealt with the permissions box and we are told if they granted or denied access
+     *
      * @param requestCode
      * @param permissions
      * @param grantResults
@@ -383,26 +394,7 @@ public class MainActivity extends AppCompatActivity implements GCellBeaconManage
         }
     }
 
-    // stack overflow reference here
-
-    public boolean isConnected() {
-        Runtime connection = Runtime.getRuntime();
-        try {
-            java.lang.Process ping = connection.exec("/system/bin/ping -c 1 8.8.8.8");
-            int exit = ping.waitFor();
-            return  (exit == 0);
-        }
-        catch (IOException error) {
-            error.printStackTrace();
-        }
-        catch (InterruptedException error) {
-            error.printStackTrace();
-        }
-        return false;
-    }
 }
-
-
 
 
 

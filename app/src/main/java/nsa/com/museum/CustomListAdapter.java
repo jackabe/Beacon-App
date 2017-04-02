@@ -6,6 +6,7 @@ import java.util.List;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.provider.SyncStateContract;
 import android.support.design.widget.Snackbar;
@@ -29,6 +30,9 @@ public class CustomListAdapter extends BaseAdapter {
     int close;
     Calendar time;
     int currentHour;
+    String museumCity;
+
+    // Code referenced from the source http://androidtuts4u.blogspot.co.uk/2013/02/android-list-view-using-custom-adapter.html.
 
     public CustomListAdapter(Context context, ArrayList<Museums> list) {
 
@@ -76,9 +80,12 @@ public class CustomListAdapter extends BaseAdapter {
         TextView state = (TextView) convertView.findViewById(R.id.state);
         open = museumListContent.getMuseumOpen();
         close = museumListContent.getMuseumClose();
+
+        // get the hour of day, 1-24.
         time = Calendar.getInstance();
         currentHour = time.get(Calendar.HOUR_OF_DAY);
 
+        // Check if the user is open open or not by comparing current time with open and close in database.
         if (currentHour > open) {
             state.setText("Open");
             state.setTextColor(Color.parseColor("#006600"));
@@ -97,9 +104,15 @@ public class CustomListAdapter extends BaseAdapter {
         convertView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                // Add museum clicked to sp
+                museumCity = museumName.getText().toString();
+                SharedPreferences museum = context.getSharedPreferences("museum", context.MODE_PRIVATE);
+                SharedPreferences.Editor edit = museum.edit();
+                edit.putString("museum", museumCity);
+                edit.commit();
                 Intent beacons = new Intent(context, BeaconActivity.class);
                 context.startActivity(beacons);
-                Toast.makeText(context, museumName.getText().toString() + " " + context.getString(R.string.museum_loaded), Toast.LENGTH_SHORT).show();
+                Toast.makeText(context, museumCity + " " + context.getString(R.string.museum_loaded), Toast.LENGTH_SHORT).show();
             }
         });
         return convertView;

@@ -4,16 +4,16 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
-public class DBConnector {
+public class MessageConnector {
 
-    public static final String DATABASE_NAME = "MY_DATABASE";
+    // Code referenced from the source http://androidtuts4u.blogspot.co.uk/2013/02/android-list-view-using-custom-adapter.html.
+
+    public static final String DATABASE_NAME = "MessageDatabase";
     public static final int DATABASE_VERSION = 1;
     SQLiteDatabase sqlDatabase;
     ItemsDBHelper dbHelper;
 
-    // Code referenced from the source http://androidtuts4u.blogspot.co.uk/2013/02/android-list-view-using-custom-adapter.html.
-
-    public DBConnector(Context context) {
+    public MessageConnector(Context context) {
 
         dbHelper = new ItemsDBHelper(context, DATABASE_NAME, null,
                 DATABASE_VERSION);

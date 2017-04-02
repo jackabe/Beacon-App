@@ -46,6 +46,8 @@ public class AdminActivity extends AppCompatActivity {
     String link;
     DBConnector db;
 
+    Button messages;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -65,8 +67,17 @@ public class AdminActivity extends AppCompatActivity {
         addLink = (EditText) findViewById(R.id.addLink);
         addBeacon = (Button) findViewById(R.id.addBeacon);
         deleteBeacon = (Button) findViewById(R.id.deleteBeacon);
+        messages = (Button) findViewById(R.id.messages);
 
         db = new DBConnector(this);
+
+        messages.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getApplicationContext(), MessageCenterActivity.class);
+                startActivity(intent);
+            }
+        });
 
         addMuseum.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -132,9 +143,6 @@ public class AdminActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
         switch (item.getItemId()) {
             case R.id.action_settings:
                 Intent settings = new Intent(getApplicationContext(), NewSettingsActivity.class);
@@ -152,8 +160,6 @@ public class AdminActivity extends AppCompatActivity {
                 return true;
 
             default:
-                // If we got here, the user's action was not recognized.
-                // Invoke the superclass to handle it.
                 return super.onOptionsItemSelected(item);
 
         }

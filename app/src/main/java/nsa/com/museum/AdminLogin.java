@@ -36,6 +36,7 @@ public class AdminLogin extends Activity {
             @Override
             public void onClick(View v) {
 
+                // Get inputs to string and check if they are equal to admin and password
                 String email = mEmailView.getText().toString();
                 String password = mPasswordView.getText().toString();
 
@@ -46,16 +47,7 @@ public class AdminLogin extends Activity {
 
                 else {
                     Snackbar snackbar = Snackbar
-                            .make(v, "Try again!", Snackbar.LENGTH_LONG)
-                            .setAction("RETRY", new View.OnClickListener() {
-                                @Override
-                                public void onClick(View view) {
-                                }
-                            });
-                    snackbar.setActionTextColor(Color.RED);
-                    View sbView = snackbar.getView();
-                    TextView textView = (TextView) sbView.findViewById(android.support.design.R.id.snackbar_text);
-                    textView.setTextColor(Color.YELLOW);
+                            .make(v, "Try again!", Snackbar.LENGTH_LONG);
                     snackbar.show();
 
 

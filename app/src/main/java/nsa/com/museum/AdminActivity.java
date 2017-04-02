@@ -3,12 +3,15 @@ package nsa.com.museum;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.Configuration;
+import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.media.Image;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.DisplayMetrics;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -22,6 +25,7 @@ import android.widget.Toast;
 
 import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
+import java.util.Locale;
 import java.util.Map;
 
 public class AdminActivity extends AppCompatActivity {
@@ -45,6 +49,7 @@ public class AdminActivity extends AppCompatActivity {
     String name;
     String link;
     DBConnector db;
+    Button language;
 
     Button messages;
 
@@ -68,6 +73,7 @@ public class AdminActivity extends AppCompatActivity {
         addBeacon = (Button) findViewById(R.id.addBeacon);
         deleteBeacon = (Button) findViewById(R.id.deleteBeacon);
         messages = (Button) findViewById(R.id.messages);
+        language = (Button) findViewById(R.id.lang);
 
         db = new DBConnector(this);
 
@@ -132,11 +138,26 @@ public class AdminActivity extends AppCompatActivity {
                 Toast.makeText(getApplicationContext(), name + " deleted from database", Toast.LENGTH_SHORT).show();
             }
         });
+
+        language.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // uses code from http://stackoverflow.com/questions/2900023/change-language-programmatically-in-android
+                Locale myLocale = new Locale("cy");
+                Resources res = getResources();
+                DisplayMetrics dm = res.getDisplayMetrics();
+                Configuration conf = res.getConfiguration();
+                conf.locale = myLocale;
+                res.updateConfiguration(conf, dm);
+                Intent refresh = new Intent(getApplicationContext(), MainActivity.class);
+                startActivity(refresh);
+                finish();
+            }
+        });
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_main, menu);
         return true;
     }

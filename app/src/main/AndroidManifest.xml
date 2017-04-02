@@ -79,6 +79,11 @@
             android:name=".QuestionActivity"
             android:label="@string/messages"
             android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".LanguageChangeActivity"
+            android:label="@string/action_settings"
+            android:theme="@style/AppTheme.NoActionBar"/>
+
     </application>
 
 </manifest>

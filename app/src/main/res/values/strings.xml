@@ -128,6 +128,9 @@
     </string>
     <string name="title_activity_movies">MoviesActivity</string>
 
+    <string name="eng_lang">Change To English</string>
+    <string name="lang_welsh">Change to Welsh</string>
+
     <string name="loaded"> Loaded!</string>
     <string name="options">Options</string>
     <string name="add">Add to history</string>

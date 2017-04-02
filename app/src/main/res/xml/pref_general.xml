@@ -1,10 +1,10 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
 
     <SwitchPreference
-    android:defaultValue="true"
-    android:key="example_switch"
-    android:summary="@string/pref_description_switch_language"
-    android:title="@string/pref_title_switch_language" />
+        android:defaultValue="false"
+        android:key="example_switch"
+        android:summary="@string/pref_description_switch_language"
+        android:title="@string/pref_title_switch_language" />
 
     <SwitchPreference
         android:defaultValue="true"

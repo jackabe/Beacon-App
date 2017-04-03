@@ -1,8 +1,10 @@
 package nsa.com.museum;
 
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
@@ -406,9 +408,23 @@ public class MapsActivity extends AppCompatActivity
 
                 // Placing a marker on the touched position
                 Marker m = googleMap.addMarker(markerOptions);
+
+                // When marker is clicked, it takes it to google maps page with all the info related to it
+                googleMap.setOnInfoWindowClickListener(new GoogleMap.OnInfoWindowClickListener() {
+                    @Override
+                    public void onInfoWindowClick(Marker marker) {
+                        Uri uri = Uri.parse("https://www.google.co.uk/maps/place/Moffett+Field+Historical+Society+Museum/@37.4039375,-122.0608433,13.39z/data=!4m5!3m4!1s0x808fb0d500000001:0x93deb066c0082ec2!8m2!3d37.4112691!4d-122.0540996");
+                        Intent o = new Intent(Intent.ACTION_VIEW, uri);
+                        startActivity(o);
+                    }
+                });
+
+
             }
         }
     }
+
+
     public class Place_JSON {
 
         // Receives a JSONObject and returns a list

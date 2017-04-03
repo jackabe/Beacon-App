@@ -3,7 +3,6 @@ import android.Manifest;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
@@ -52,10 +51,10 @@ public class BeaconActivity extends AppCompatActivity implements GCellBeaconMana
     ListView lv;
     String aBeacon;
     ArrayList<String> beacons;
-    String museumCity;
+    byte[] majestysByte;
 
     int PERM_CODE = 101;
-//    String[] permissions = new String[]{Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.BLUETOOTH, Manifest.permission.BLUETOOTH_ADMIN};
+    String[] permissions = new String[]{Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.BLUETOOTH, Manifest.permission.BLUETOOTH_ADMIN};
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -64,9 +63,7 @@ public class BeaconActivity extends AppCompatActivity implements GCellBeaconMana
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        // Check which museum they click on, it is sotred in the sp.
-        SharedPreferences museum = getSharedPreferences("museum", 0);
-        museumCity = museum.getString("museum", "museum");
+        ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_COARSE_LOCATION}, PERM_CODE);
 
         lv = (ListView) findViewById(R.id.beaconsLv);
         beaconsArrayList = new ArrayList<>();
@@ -77,14 +74,12 @@ public class BeaconActivity extends AppCompatActivity implements GCellBeaconMana
         scanMan.enableBlueToothAutoSwitchOn(true);
         scanMan.startScanningForBeacons();
 
-        // Coverting all the images to insert into the database from png's to bitmaps to bytes.
-        // Code here referenced from http://stackoverflow.com/questions/20700181/convert-imageview-in-bytes-android.
         Bitmap majesty = BitmapFactory.decodeResource(getResources(), R.drawable.abby);
         Bitmap mad = BitmapFactory.decodeResource(getResources(), R.drawable.mad);
         Bitmap beatles = BitmapFactory.decodeResource(getResources(), R.drawable.beatles);
         byte[] beatlesByte = SetImage.getBytes(beatles);
         byte[] madByte = SetImage.getBytes(mad);
-        byte[] majestysByte = SetImage.getBytes(majesty);
+        majestysByte = SetImage.getBytes(majesty);
 
 //        String delQuery = "DELETE FROM beaconDetails WHERE beaconId='"+"3FC5BB15-5FAF-4505-BDC8-A49DD6C19A45"+"' ";
 //        db.executeQuery(delQuery);
@@ -93,24 +88,18 @@ public class BeaconActivity extends AppCompatActivity implements GCellBeaconMana
 //        String del3 = "DELETE FROM beaconDetails WHERE beaconId='"+"01E82601-8329-4BD6-A126-8A17B03D55EC"+"' ";
 //        db.executeQuery(del3);
 
-        db.insert("3FC5BB15-5FAF-4505-BDC8-A49DD6C1", "Cardiff", "Majesty", "http://rhp.avoqr.eu/en/majesty", majestysByte);
-        db.insert("96530D4D-09AF-4159-B99E-951A5E826584", "Cardiff", "Madeleine Peyroux", "www.thebeatles.com", madByte);
+        db.insert("3FC5BB15-5FAF-4505-BDC8-A49DD6C1", "Cardiff", "Majesty", "rhp.avoqr.eu/en/majesty", majestysByte);
+        db.insert("96530D4D-09AF-4159-B99E-951A5E826584", "Cardiff", "Madeleine Peyroux", "rhp.avoqr.eu/en/musicians", madByte);
         db.insert("01E82601-8329-4BD6-A126-8A17B03D55EC", "Cardiff", "The Beatles", "www.thebeatles.com", beatlesByte);
     }
 
     @Override
     public void onGCellUpdateBeaconList(List<GCelliBeacon> list) {
+
+        Log.i("BEACONS", list.size() + "");
         for (GCelliBeacon beacon : list) {
 
             String theBeacon = beacon.getProxUuid().getStringFormattedUuid();
-
-            // Code referenced from the source http://androidtuts4u.blogspot.co.uk/2013/02/android-list-view-using-custom-adapter.html.
-
-            // Check if the beacon found has already been seen and is a valid one from the database.
-            // Get the beacon id and compared it with all in database.
-            // Create new cursor and select all rows from the table
-            // Set each value we want from the database show in our list adapter.
-            // Add the array list contaning these values to the custom list adapter.
 
             if (!beacons.contains(theBeacon)) {
                 aBeacon = theBeacon;
@@ -121,12 +110,12 @@ public class BeaconActivity extends AppCompatActivity implements GCellBeaconMana
 
                 if (c2.getCount() == 0) {
                     Log.i("NotIn", "not in database" + "");
-                    beaconsArrayList.clear();
+//                beaconsArrayList.clear();
                     c2.close();
                 }
 
                 else {
-                    String check = "SELECT * FROM beaconDetails WHERE beaconId='" + aBeacon + "WHERE museumId='" + museumCity + "' ";
+                    String check = "SELECT * FROM beaconDetails WHERE beaconId='" + aBeacon + "' ";
                     Cursor c1 = db.selectQuery(check);
                     if (c1 != null && c1.getCount() != 0) {
                         if (c1.moveToFirst()) {
@@ -139,7 +128,6 @@ public class BeaconActivity extends AppCompatActivity implements GCellBeaconMana
                                         .getColumnIndex("objectName")));
                                 beaconsListItems.setUrl(c1.getString(c1
                                         .getColumnIndex("url")));
-                                byte[] b = c1.getBlob(c1.getColumnIndex("objectImage"));
                                 beaconsListItems.setImage(c1.getBlob(c1
                                         .getColumnIndex("objectImage")));
 
@@ -182,10 +170,10 @@ public class BeaconActivity extends AppCompatActivity implements GCellBeaconMana
     public void locationPermissionsDenied() {
     }
     public void checkPermissions() {
-        //Request permission if ANY permissions have been denied
-//        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && !hasPermissions(getApplicationContext(), permissions)) {
-//            ActivityCompat.requestPermissions(this, permissions, PERM_CODE);
-//        }
+//        Request permission if ANY permissions have been denied
+        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && !hasPermissions(getApplicationContext(), permissions)) {
+            ActivityCompat.requestPermissions(this, permissions, PERM_CODE);
+        }
     }
     /**
      * Iterate through all permissions provided and ensure all have been approved
@@ -197,6 +185,7 @@ public class BeaconActivity extends AppCompatActivity implements GCellBeaconMana
     public boolean hasPermissions(Context context, String... permissions) {
         if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && context != null && permissions != null) {
             for (String permission : permissions) {
+                Log.i("PERM", permission);
                 if (ActivityCompat.checkSelfPermission(context, permission) != PackageManager.PERMISSION_GRANTED) {
                     return false;
                 }
@@ -258,6 +247,10 @@ public class BeaconActivity extends AppCompatActivity implements GCellBeaconMana
             case R.id.action_home:
                 Intent home = new Intent(getApplicationContext(), MainActivity.class);
                 startActivity(home);
+                return true;
+            case R.id.action_history:
+                Intent history = new Intent(getApplicationContext(), HistoryActivity.class);
+                startActivity(history);
                 return true;
             default:
                 // If we got here, the user's action was not recognized.

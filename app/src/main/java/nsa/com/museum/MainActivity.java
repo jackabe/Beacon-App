@@ -271,6 +271,11 @@ public class MainActivity extends AppCompatActivity implements GCellBeaconManage
                 startActivity(home);
                 return true;
 
+            case R.id.action_history:
+                Intent history = new Intent(getApplicationContext(), HistoryActivity.class);
+                startActivity(history);
+                return true;
+
             default:
                 // If action not recognised.
                 return super.onOptionsItemSelected(item);

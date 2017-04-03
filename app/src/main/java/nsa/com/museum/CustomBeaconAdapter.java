@@ -33,6 +33,10 @@ public class CustomBeaconAdapter extends BaseAdapter implements Filterable {
     String beacon;
     Beacons beaconListItems;
     InternetConnection internetConnection;
+    String beaconId;
+    String beaconName;
+    String url;
+    DBHistory db;
 
     // Code referenced from the source http://androidtuts4u.blogspot.co.uk/2013/02/android-list-view-using-custom-adapter.html.
 
@@ -40,6 +44,7 @@ public class CustomBeaconAdapter extends BaseAdapter implements Filterable {
 
         this.context = context;
         beaconList = list;
+        db = new DBHistory(context);
     }
 
     @Override
@@ -104,12 +109,16 @@ public class CustomBeaconAdapter extends BaseAdapter implements Filterable {
                 // Give user options when they hold click.
                 internetConnection = new InternetConnection();
                 beacon = objectName.getText().toString();
+                beaconId = beaconListItems.getBeaconId();
+                beaconName = beaconListItems.getObjectName();
+                url = beaconListItems.getUrl();
                 AlertDialog.Builder options = new AlertDialog.Builder(context);
                 options.setTitle(context.getString(R.string.options));
                 options.setItems(new String[]{context.getString(R.string.add), context.getString(R.string.open), context.getString(R.string.cancel)}, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int i) {
                         switch (i) {
                             case 0:
+                                db.insert(beaconId, beaconName, url);
                                 Toast.makeText(context, beacon + " " + context.getString(R.string.added_history), Toast.LENGTH_SHORT).show();
                                 Intent intent = new Intent(context, HistoryActivity.class);
                                 context.startActivity(intent);

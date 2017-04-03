@@ -49,7 +49,6 @@ public class AdminActivity extends AppCompatActivity {
     String name;
     String link;
     DBConnector db;
-    Button language;
 
     Button messages;
 
@@ -73,7 +72,6 @@ public class AdminActivity extends AppCompatActivity {
         addBeacon = (Button) findViewById(R.id.addBeacon);
         deleteBeacon = (Button) findViewById(R.id.deleteBeacon);
         messages = (Button) findViewById(R.id.messages);
-        language = (Button) findViewById(R.id.lang);
 
         db = new DBConnector(this);
 
@@ -139,21 +137,6 @@ public class AdminActivity extends AppCompatActivity {
             }
         });
 
-        language.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // uses code from http://stackoverflow.com/questions/2900023/change-language-programmatically-in-android
-                Locale myLocale = new Locale("cy");
-                Resources res = getResources();
-                DisplayMetrics dm = res.getDisplayMetrics();
-                Configuration conf = res.getConfiguration();
-                conf.locale = myLocale;
-                res.updateConfiguration(conf, dm);
-                Intent refresh = new Intent(getApplicationContext(), MainActivity.class);
-                startActivity(refresh);
-                finish();
-            }
-        });
     }
 
     @Override
@@ -178,6 +161,11 @@ public class AdminActivity extends AppCompatActivity {
             case R.id.action_login:
                 Intent login = new Intent(getApplicationContext(), AdminLogin.class);
                 startActivity(login);
+                return true;
+
+            case R.id.action_history:
+                Intent history = new Intent(getApplicationContext(), HistoryActivity.class);
+                startActivity(history);
                 return true;
 
             default:

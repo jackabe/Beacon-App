@@ -1,9 +1,11 @@
 package nsa.com.museum;
 
 import android.content.Intent;
+import android.database.Cursor;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ArrayAdapter;
@@ -14,8 +16,10 @@ import java.util.ArrayList;
 public class HistoryActivity extends AppCompatActivity {
 
     ListView historyLv;
-    ArrayAdapter historyAdap;
-    ArrayList<String> historyBeacons;
+    DBHistory db;
+    CustomHistoryAdapter historyAdapter;
+    ArrayList<History> historyArrayList;
+    History historyListItems;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -24,12 +28,37 @@ public class HistoryActivity extends AppCompatActivity {
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        historyLv = (ListView) findViewById(R.id.historyView);
+        Log.i("check", "out of method" + "");
 
-//        historyBeacons = getIntent().getExtras().getStringArrayList("beacons");
-//        historyAdap = new ArrayAdapter(getApplicationContext(), android.R.layout.simple_list_item_1, historyBeacons);
-//        historyLv = (ListView) findViewById(R.id.historyView);
-//        historyLv.setAdapter(historyAdap);
+        db = new DBHistory(this);
+        historyArrayList = new ArrayList<>();
+        historyArrayList.clear();
+        final String query = "SELECT * FROM historyDetails ";
+        Cursor c1 = db.selectQuery(query);
+        if (c1 != null && c1.getCount() != 0) {
+            if (c1.moveToFirst()) {
 
+                do {
+                    historyListItems = new History();
+                    historyListItems.setBeaconId(c1.getString(c1
+                            .getColumnIndex("beaconId")));
+                    historyListItems.setObjectName(c1.getString(c1
+                            .getColumnIndex("objectName")));
+                    historyListItems.setUrl(c1.getString(c1
+                            .getColumnIndex("url")));
+
+                    historyArrayList.add(historyListItems);
+
+                } while (c1.moveToNext());
+            }
+            historyAdapter = new CustomHistoryAdapter(
+                    HistoryActivity.this, historyArrayList);
+            historyLv.setAdapter(historyAdapter);
+
+                } while (c1.moveToNext());
+
+        c1.close();
     }
 
     @Override
@@ -41,6 +70,9 @@ public class HistoryActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
         switch (item.getItemId()) {
             case R.id.action_settings:
                 Intent settings = new Intent(getApplicationContext(), NewSettingsActivity.class);
@@ -62,7 +94,15 @@ public class HistoryActivity extends AppCompatActivity {
                 startActivity(home);
                 return true;
 
+
+            case R.id.action_history:
+                Intent history = new Intent(getApplicationContext(), HistoryActivity.class);
+                startActivity(history);
+                return true;
+
             default:
+                // If we got here, the user's action was not recognized.
+                // Invoke the superclass to handle it.
                 return super.onOptionsItemSelected(item);
 
         }

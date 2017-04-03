@@ -86,12 +86,12 @@ public class CustomListAdapter extends BaseAdapter {
         currentHour = time.get(Calendar.HOUR_OF_DAY);
 
         // Check if the user is open open or not by comparing current time with open and close in database.
-        if (currentHour > open) {
+        if (currentHour >= open && currentHour < close) {
             state.setText("Open");
             state.setTextColor(Color.parseColor("#006600"));
         }
 
-        else if (currentHour < open) {
+        else if (currentHour < open || currentHour > close) {
             state.setText("Closed");
             state.setTextColor(Color.parseColor("#cc0000"));
         }

@@ -163,6 +163,11 @@ public class AdminActivity extends AppCompatActivity {
                 startActivity(login);
                 return true;
 
+            case R.id.action_history:
+                Intent history = new Intent(getApplicationContext(), HistoryActivity.class);
+                startActivity(history);
+                return true;
+
             default:
                 return super.onOptionsItemSelected(item);
 

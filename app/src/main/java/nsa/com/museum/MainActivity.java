@@ -7,6 +7,8 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
@@ -56,6 +58,7 @@ public class MainActivity extends AppCompatActivity implements GCellBeaconManage
     GCellBeaconScanManager scanMan;
     int dID;
     DBConnector db;
+    DBBeacon dbBeacon;
     EditText cityInput;
     ListView museumsList;
     Button searchBtn;
@@ -84,6 +87,7 @@ public class MainActivity extends AppCompatActivity implements GCellBeaconManage
 
         // initialise all our fields
         cityInput = (EditText) findViewById(R.id.editSearch);
+        dbBeacon = new DBBeacon(this);
         searchBtn = (Button) findViewById(R.id.searchBtn);
         museumsList = (ListView) findViewById(R.id.museumsList);
         findBtn = (Button) findViewById(R.id.findBtn);
@@ -211,26 +215,45 @@ public class MainActivity extends AppCompatActivity implements GCellBeaconManage
                 startActivity(i);
             }
         });
+
+
+        // Inserting some default beacons and images for testing
+        Bitmap majesty = BitmapFactory.decodeResource(getResources(), R.drawable.abby);
+        Bitmap mad = BitmapFactory.decodeResource(getResources(), R.drawable.mad);
+        Bitmap beatles = BitmapFactory.decodeResource(getResources(), R.drawable.beatles);
+        byte[] beatlesByte = SetImage.getBytes(beatles);
+        byte[] madByte = SetImage.getBytes(mad);
+        byte[] majestysByte = SetImage.getBytes(majesty);
+        String delQuery = "DELETE FROM beaconDetails WHERE beaconId='"+"3FC5BB15-5FAF-4505-BDC8-A49DD6C19A45"+"' ";
+        dbBeacon.executeQuery(delQuery);
+        String del2 = "DELETE FROM beaconDetails WHERE beaconId='"+"96530D4D-09AF-4159-B99E-951A5E826584"+"' ";
+        dbBeacon.executeQuery(del2);
+        String del3 = "DELETE FROM beaconDetails WHERE beaconId='"+"01E82601-8329-4BD6-A126-8A17B03D55EC"+"' ";
+        dbBeacon.executeQuery(del3);
+
+        dbBeacon.insert("3FC5BB15-5FAF-4505-BDC8-A49DD6C1", "Cardiff", "Majesty", "rhp.avoqr.eu/en/majesty", majestysByte);
+        dbBeacon.insert("96530D4D-09AF-4159-B99E-951A5E826584", "Cardiff", "Madeleine Peyroux", "rhp.avoqr.eu/en/musicians", madByte);
+        dbBeacon.insert("01E82601-8329-4BD6-A126-8A17B03D55EC", "Cardiff", "The Beatles", "www.thebeatles.com", beatlesByte);
     }
 
-    public static void createNotification(Context ctx, boolean dismiss, int id) {
-        NotificationCompat.Builder notifBuilder = new NotificationCompat.Builder(ctx);
+    public static void createNotification(Context context, boolean dismiss, int id) {
+        NotificationCompat.Builder notif = new NotificationCompat.Builder(context);
         // You can look at other attributes to set but these three MUST be set in order to build
-        notifBuilder.setSmallIcon(R.mipmap.icon_inverted).setContentTitle(ctx.getString(R.string.beacons_title)).setContentText(ctx.getString(R.string.click_me));
+        notif.setSmallIcon(R.mipmap.icon_inverted).setContentTitle(context.getString(R.string.beacons_title)).setContentText(context.getString(R.string.click_me));
         //We could pass in whether it was actually dismissable and remove the need for an if
-        notifBuilder.setOngoing(!dismiss);
+        notif.setOngoing(!dismiss);
         //Create an action for when the intent is clicked (just opening this activity)
-        Intent resultIntent = new Intent(ctx, BeaconActivity.class);
+        Intent resultIntent = new Intent(context, BeaconActivity.class);
         PendingIntent resultPendingIntent =
                 PendingIntent.getActivity(
-                        ctx,
+                        context,
                         0,
                         resultIntent,
                         PendingIntent.FLAG_UPDATE_CURRENT
                 );
-        notifBuilder.setContentIntent(resultPendingIntent);
-        NotificationManager mNotificationManager = (NotificationManager) ctx.getSystemService(Context.NOTIFICATION_SERVICE);
-        mNotificationManager.notify(id, notifBuilder.build());
+        notif.setContentIntent(resultPendingIntent);
+        NotificationManager mNotificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+        mNotificationManager.notify(id, notif.build());
     }
 
     //TODO 3 add a click listener to the dismiss button to hide any notification that is showing
@@ -284,12 +307,12 @@ public class MainActivity extends AppCompatActivity implements GCellBeaconManage
 
     }
 
+
     @Override
     public void onGCellUpdateBeaconList(List<GCelliBeacon> list) {
+        Log.i("BEACONS", list.size() + "");
         for (GCelliBeacon beacon : list) {
-            // Check if beacon in list
-            // If not notify user theres a new beacon
-            // First check if it is a valid beacon in the database.
+
             String theBeacon = beacon.getProxUuid().getStringFormattedUuid();
 
             if (!beacons.contains(theBeacon)) {
@@ -297,12 +320,14 @@ public class MainActivity extends AppCompatActivity implements GCellBeaconManage
                 beacons.add(aBeacon);
                 Log.i("BeaconAddedToList", "Beacon added to list" + "");
                 String checkIfIn = "SELECT beaconId FROM beaconDetails WHERE beaconId='" + aBeacon + "' ";
-                Cursor c2 = db.selectQuery(checkIfIn);
+                Cursor c2 = dbBeacon.selectQuery(checkIfIn);
 
                 if (c2.getCount() == 0) {
                     Log.i("NotIn", "not in database" + "");
+//                beaconsArrayList.clear();
                     c2.close();
                 } else {
+                    Log.i("BEACONS", "HEllo" + "");
                     createNotification(getApplicationContext(), true, dID);
                 }
             }

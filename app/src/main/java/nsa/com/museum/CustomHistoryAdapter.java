@@ -30,6 +30,8 @@ public class CustomHistoryAdapter extends BaseAdapter {
     String url;
     DBHistory db;
 
+    // Code referenced from the source http://androidtuts4u.blogspot.co.uk/2013/02/android-list-view-using-custom-adapter.html.
+
 
     public CustomHistoryAdapter(Context context, ArrayList<History> list) {
 

@@ -65,6 +65,8 @@ public class ItemsDBHelper extends SQLiteOpenHelper{
             + " text not null, " + MESSAGE_ANSWERED
             + " text not null, " + MESSAGE_QUESTION + " text not null);";
 
+    // Some Code referenced from the source http://androidtuts4u.blogspot.co.uk/2013/02/android-list-view-using-custom-adapter.html.
+
     public ItemsDBHelper(Context context, String name, SQLiteDatabase.CursorFactory factory, int version) {
 
         super(context, name, factory, version);

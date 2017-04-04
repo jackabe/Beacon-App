@@ -237,18 +237,20 @@ public class MainActivity extends AppCompatActivity implements GCellBeaconManage
     }
 
     public static void createNotification(Context context, boolean dismiss, int id) {
+        // Code referenced from https://developer.android.com/guide/topics/ui/notifiers/notifications.html
+
         NotificationCompat.Builder notif = new NotificationCompat.Builder(context);
         // You can look at other attributes to set but these three MUST be set in order to build
         notif.setSmallIcon(R.mipmap.icon_inverted).setContentTitle(context.getString(R.string.beacons_title)).setContentText(context.getString(R.string.click_me));
         //We could pass in whether it was actually dismissable and remove the need for an if
         notif.setOngoing(!dismiss);
         //Create an action for when the intent is clicked (just opening this activity)
-        Intent resultIntent = new Intent(context, BeaconActivity.class);
+        Intent intent = new Intent(context, BeaconActivity.class);
         PendingIntent resultPendingIntent =
                 PendingIntent.getActivity(
                         context,
                         0,
-                        resultIntent,
+                        intent,
                         PendingIntent.FLAG_UPDATE_CURRENT
                 );
         notif.setContentIntent(resultPendingIntent);

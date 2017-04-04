@@ -42,7 +42,6 @@ import java.util.ArrayList;
 import java.util.List;
 public class BeaconActivity extends AppCompatActivity implements GCellBeaconManagerScanEvents {
     GCellBeaconScanManager scanMan;
-    ArrayList<String> historyBeacons = new ArrayList<>();
     DBBeacon db;
 
     CustomBeaconAdapter beaconAdapter;
@@ -51,7 +50,6 @@ public class BeaconActivity extends AppCompatActivity implements GCellBeaconMana
     ListView lv;
     String aBeacon;
     ArrayList<String> beacons;
-    byte[] majestysByte;
 
     int PERM_CODE = 101;
     String[] permissions = new String[]{Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.BLUETOOTH, Manifest.permission.BLUETOOTH_ADMIN};
@@ -78,6 +76,8 @@ public class BeaconActivity extends AppCompatActivity implements GCellBeaconMana
 
     @Override
     public void onGCellUpdateBeaconList(List<GCelliBeacon> list) {
+
+        // Code referenced from the source http://androidtuts4u.blogspot.co.uk/2013/02/android-list-view-using-custom-adapter.html.
 
         Log.i("BEACONS", list.size() + "");
         for (GCelliBeacon beacon : list) {
@@ -121,6 +121,8 @@ public class BeaconActivity extends AppCompatActivity implements GCellBeaconMana
                         beaconAdapter = new CustomBeaconAdapter(
                                 BeaconActivity.this, beaconsArrayList);
                         lv.setAdapter(beaconAdapter);
+
+                        c1.close();
                     }
                 }
             } else if (beacons.contains(theBeacon)) {
@@ -236,8 +238,6 @@ public class BeaconActivity extends AppCompatActivity implements GCellBeaconMana
                 startActivity(history);
                 return true;
             default:
-                // If we got here, the user's action was not recognized.
-                // Invoke the superclass to handle it.
                 return super.onOptionsItemSelected(item);
         }
     }

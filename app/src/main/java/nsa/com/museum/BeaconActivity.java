@@ -74,23 +74,6 @@ public class BeaconActivity extends AppCompatActivity implements GCellBeaconMana
         scanMan.enableBlueToothAutoSwitchOn(true);
         scanMan.startScanningForBeacons();
 
-        Bitmap majesty = BitmapFactory.decodeResource(getResources(), R.drawable.abby);
-        Bitmap mad = BitmapFactory.decodeResource(getResources(), R.drawable.mad);
-        Bitmap beatles = BitmapFactory.decodeResource(getResources(), R.drawable.beatles);
-        byte[] beatlesByte = SetImage.getBytes(beatles);
-        byte[] madByte = SetImage.getBytes(mad);
-        majestysByte = SetImage.getBytes(majesty);
-
-//        String delQuery = "DELETE FROM beaconDetails WHERE beaconId='"+"3FC5BB15-5FAF-4505-BDC8-A49DD6C19A45"+"' ";
-//        db.executeQuery(delQuery);
-//        String del2 = "DELETE FROM beaconDetails WHERE beaconId='"+"96530D4D-09AF-4159-B99E-951A5E826584"+"' ";
-//        db.executeQuery(del2);
-//        String del3 = "DELETE FROM beaconDetails WHERE beaconId='"+"01E82601-8329-4BD6-A126-8A17B03D55EC"+"' ";
-//        db.executeQuery(del3);
-
-        db.insert("3FC5BB15-5FAF-4505-BDC8-A49DD6C1", "Cardiff", "Majesty", "rhp.avoqr.eu/en/majesty", majestysByte);
-        db.insert("96530D4D-09AF-4159-B99E-951A5E826584", "Cardiff", "Madeleine Peyroux", "rhp.avoqr.eu/en/musicians", madByte);
-        db.insert("01E82601-8329-4BD6-A126-8A17B03D55EC", "Cardiff", "The Beatles", "www.thebeatles.com", beatlesByte);
     }
 
     @Override

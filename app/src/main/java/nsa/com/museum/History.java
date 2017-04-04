@@ -1,25 +1,16 @@
 package nsa.com.museum;
 
 /**
- * Created by c1673107 on 27/03/2017.
+ * Created by c1571078 on 03/04/2017.
  */
 public class History {
 
     String beaconId;
     String objectName;
     String url;
-    byte[] image;
 
     public History() {
 
-    }
-
-
-    public History(String beaconId, String objectName, String url, byte[] image) {
-        this.beaconId = beaconId;
-        this.objectName = objectName;
-        this.url = url;
-        this.image = image;
     }
 
     public String getBeaconId() {

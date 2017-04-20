@@ -1,4 +1,4 @@
-package nsa.com.museum;
+package nsa.com.museum.MapsActivity;
 
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -45,6 +45,8 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+
+import nsa.com.museum.R;
 
 /**===MAPS FUNCTIONALITY===
  * Adapted using combination of Android Docs, Google Developer and Stack Overflow at the following links.

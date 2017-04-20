@@ -1,4 +1,4 @@
-package nsa.com.museum;
+package nsa.com.museum.HistoryActivity;
 
 /**
  * Created by c1571078 on 03/04/2017.

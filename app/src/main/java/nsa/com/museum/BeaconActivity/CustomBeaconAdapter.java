@@ -1,7 +1,6 @@
-package nsa.com.museum;
+package nsa.com.museum.BeaconActivity;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import android.app.AlertDialog;
 import android.content.Context;
@@ -10,7 +9,6 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
-import android.provider.SyncStateContract;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -24,7 +22,10 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import static android.R.attr.filter;
+import nsa.com.museum.HistoryActivity.DBHistory;
+import nsa.com.museum.HistoryActivity.HistoryActivity;
+import nsa.com.museum.InternetConnection;
+import nsa.com.museum.R;
 
 public class CustomBeaconAdapter extends BaseAdapter implements Filterable {
 

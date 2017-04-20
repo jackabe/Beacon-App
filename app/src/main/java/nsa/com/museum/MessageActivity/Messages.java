@@ -1,4 +1,4 @@
-package nsa.com.museum;
+package nsa.com.museum.MessageActivity;
 
 /**
  * Created by Jack on 02/04/2017.

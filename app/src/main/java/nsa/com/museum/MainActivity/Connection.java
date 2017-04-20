@@ -1,4 +1,4 @@
-package nsa.com.museum;
+package nsa.com.museum.MainActivity;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -7,6 +7,9 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.Button;
+
+import nsa.com.museum.MainActivity.MainActivity;
+import nsa.com.museum.R;
 
 public class Connection extends AppCompatActivity {
 

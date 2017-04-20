@@ -1,20 +1,22 @@
-package nsa.com.museum;
+package nsa.com.museum.BeaconActivity;
 
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
-public class DBHistory {
+import nsa.com.museum.ItemsDBHelper;
 
-    public static final String DATABASE_NAME = "HISTORY_DATABASE";
+public class DBBeacon {
+
+    public static final String DATABASE_NAME = "BEACON_DATABASE";
     public static final int DATABASE_VERSION = 1;
     SQLiteDatabase database;
     ItemsDBHelper db;
 
     // Code referenced from the source http://androidtuts4u.blogspot.co.uk/2013/02/android-list-view-using-custom-adapter.html.
 
-    public DBHistory(Context context) {
+    public DBBeacon(Context context) {
 
         db = new ItemsDBHelper(context, DATABASE_NAME, null,
                 DATABASE_VERSION);
@@ -58,13 +60,16 @@ public class DBHistory {
 
     }
 
-    public void insert(String objId, String objName, String url) {
+    public void insert(String objId, String museumId, String objName, String url, byte[] img) {
         SQLiteDatabase d = db.getWritableDatabase();
         ContentValues cv = new ContentValues();
         cv.put("beaconId", objId);
+        cv.put("museumId", museumId);
         cv.put("objectName", objName);
         cv.put("url", url);
-        d.insert(ItemsDBHelper.TABLE_HISTORY_DETAILS, null, cv);
+        cv.put("objectImage", img);
+        d.insert(ItemsDBHelper.TABLE_BEACON_DETAILS, null, cv);
     }
+
 
 }

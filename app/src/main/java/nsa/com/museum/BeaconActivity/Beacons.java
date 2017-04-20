@@ -1,4 +1,4 @@
-package nsa.com.museum;
+package nsa.com.museum.BeaconActivity;
 
 /**
  * Created by c1673107 on 27/03/2017.

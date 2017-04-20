@@ -3,17 +3,17 @@
     <!-- These settings headers are only used on tablets. -->
 
     <header
-        android:fragment="nsa.com.museum.NewSettingsActivity$GeneralPreferenceFragment"
+        android:fragment="nsa.com.museum.SettingsActivity.NewSettingsActivity$GeneralPreferenceFragment"
         android:icon="@drawable/ic_info_black_24dp"
         android:title="@string/pref_header_general" />
 
     <header
-        android:fragment="nsa.com.museum.NewSettingsActivity$NotificationPreferenceFragment"
+        android:fragment="nsa.com.museum.SettingsActivity.NewSettingsActivity$NotificationPreferenceFragment"
         android:icon="@drawable/ic_notifications_black_24dp"
         android:title="@string/pref_header_notifications" />
 
     <header
-        android:fragment="nsa.com.museum.NewSettingsActivity$DataSyncPreferenceFragment"
+        android:fragment="nsa.com.museum.SettingsActivity.NewSettingsActivity$DataSyncPreferenceFragment"
         android:icon="@drawable/ic_sync_black_24dp"
         android:title="@string/pref_header_data_sync" />
 

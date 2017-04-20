@@ -1,84 +1,83 @@
-package nsa.com.museum;
+package nsa.com.museum.HistoryActivity;
 
 import android.content.Intent;
 import android.database.Cursor;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.ArrayAdapter;
 import android.widget.ListView;
-import android.widget.Toast;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 
-public class MessageCenterActivity extends AppCompatActivity {
+import nsa.com.museum.AdminActivity.AdminLogin;
+import nsa.com.museum.HelpActivity.HelpActivity;
+import nsa.com.museum.MainActivity.MainActivity;
+import nsa.com.museum.SettingsActivity.NewSettingsActivity;
+import nsa.com.museum.R;
 
-    ListView messagesLv;
-    ArrayList<Messages> messages;
-    Messages message;
-    String messageTitle;
-    String messageAnswered;
-    ArrayList messageAdapterList;
-    MessageConnector db;
-    CustomMessageAdapter adapter;
+public class HistoryActivity extends AppCompatActivity {
+
+    ListView historyLv;
+    DBHistory db;
+    CustomHistoryAdapter historyAdapter;
+    ArrayList<History> historyArrayList;
+    History historyListItems;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_message_center);
+        setContentView(R.layout.activity_history);
+
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        messagesLv = (ListView) findViewById(R.id.messagesLv);
-        db = new MessageConnector(this);
+        historyLv = (ListView) findViewById(R.id.historyView);
+        Log.i("check", "out of method" + "");
 
-        // Code referenced from the source http://androidtuts4u.blogspot.co.uk/2013/02/android-list-view-using-custom-adapter.html.
-
-        // Create new cursor and select all rows from the table
-        // Set each value we want from the database show in our list adapter.
-        // Add the array list contaning hese values to the custom list adapter.
-
-        messages = new ArrayList<>();
-        messages.clear();
-        final String query = "SELECT * FROM messageDetails ";
+        db = new DBHistory(this);
+        historyArrayList = new ArrayList<>();
+        historyArrayList.clear();
+        final String query = "SELECT * FROM historyDetails ";
         Cursor c1 = db.selectQuery(query);
         if (c1 != null && c1.getCount() != 0) {
             if (c1.moveToFirst()) {
+
                 do {
-                    message = new Messages();
+                    historyListItems = new History();
+                    historyListItems.setBeaconId(c1.getString(c1
+                            .getColumnIndex("beaconId")));
+                    historyListItems.setObjectName(c1.getString(c1
+                            .getColumnIndex("objectName")));
+                    historyListItems.setUrl(c1.getString(c1
+                            .getColumnIndex("url")));
 
-                    message.setMessageTitle(c1.getString(c1
-                            .getColumnIndex("messageTitle")));
-                    message.setmessageAnswered(c1.getString(c1
-                            .getColumnIndex("messageAnswered")));
-//                    message.setMessageQuestion(c1.getString(c1
-//                            .getColumnIndex("messageQuestion")));
-
-                    messages.add(message);
+                    historyArrayList.add(historyListItems);
 
                 } while (c1.moveToNext());
             }
-        }
+            historyAdapter = new CustomHistoryAdapter(
+                    HistoryActivity.this, historyArrayList);
+            historyLv.setAdapter(historyAdapter);
 
-        adapter = new CustomMessageAdapter(
-                MessageCenterActivity.this, messages);
-        messagesLv.setAdapter(adapter);
+                } while (c1.moveToNext());
+
         c1.close();
-
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_main, menu);
         return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
         switch (item.getItemId()) {
             case R.id.action_settings:
                 Intent settings = new Intent(getApplicationContext(), NewSettingsActivity.class);
@@ -100,12 +99,15 @@ public class MessageCenterActivity extends AppCompatActivity {
                 startActivity(home);
                 return true;
 
+
             case R.id.action_history:
                 Intent history = new Intent(getApplicationContext(), HistoryActivity.class);
                 startActivity(history);
                 return true;
 
             default:
+                // If we got here, the user's action was not recognized.
+                // Invoke the superclass to handle it.
                 return super.onOptionsItemSelected(item);
 
         }

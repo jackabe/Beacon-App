@@ -1,4 +1,4 @@
-package nsa.com.museum;
+package nsa.com.museum.MainActivity;
 
 import android.content.Context;
 

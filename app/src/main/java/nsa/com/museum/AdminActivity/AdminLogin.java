@@ -1,10 +1,7 @@
-package nsa.com.museum;
+package nsa.com.museum.AdminActivity;
 
 import android.content.Intent;
 import android.app.Activity;
-import android.app.LoaderManager.LoaderCallbacks;
-import android.database.Cursor;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.view.View;
@@ -12,7 +9,8 @@ import android.view.View.OnClickListener;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.TextView;
+
+import nsa.com.museum.R;
 
 /**
  * A login screen that offers login via email/password.

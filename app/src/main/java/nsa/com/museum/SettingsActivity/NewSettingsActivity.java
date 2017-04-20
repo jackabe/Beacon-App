@@ -1,4 +1,4 @@
-package nsa.com.museum;
+package nsa.com.museum.SettingsActivity;
 
 
 import android.annotation.TargetApi;
@@ -22,6 +22,10 @@ import android.view.MenuItem;
 import android.support.v4.app.NavUtils;
 
 import java.util.List;
+
+import nsa.com.museum.AppCompatPreferenceActivity;
+import nsa.com.museum.LanguageChangeActivity.LanguageChangeActivity;
+import nsa.com.museum.R;
 
 /**
  * A {@link PreferenceActivity} that presents a set of application settings. On

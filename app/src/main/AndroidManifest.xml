@@ -17,7 +17,7 @@
         android:theme="@style/Theme.AppCompat"
         android:windowSoftInputMode="stateHidden">
         <activity
-            android:name=".MainActivity"
+            android:name=".MainActivity.MainActivity"
             android:actionViewClass="android.support.v7.widget.SearchView"
             android:label="MyMuseum App"
             android:theme="@style/AppTheme.NoActionBar">
@@ -28,27 +28,27 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".SettingsActivity"
+            android:name=".SettingsActivity.SettingsActivity"
             android:label="@string/title_activity_settings"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".HistoryActivity"
+            android:name=".HistoryActivity.HistoryActivity"
             android:label="@string/historyLabel"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".BeaconActivity"
+            android:name=".BeaconActivity.BeaconActivity"
             android:label="@string/beaconsLabel"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".NewSettingsActivity"
+            android:name=".SettingsActivity.NewSettingsActivity"
             android:label="@string/title_activity_new_settings"
-            android:parentActivityName=".MainActivity">
+            android:parentActivityName=".MainActivity.MainActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="nsa.com.museum.MainActivity" />
+                android:value=".MainActivity.MainActivity" />
         </activity>
         <activity
-            android:name=".HelpActivity"
+            android:name=".HelpActivity.HelpActivity"
             android:label="@string/title_activity_help"
             android:theme="@style/AppTheme.NoActionBar" />
 
@@ -57,30 +57,30 @@
             android:value="@string/google_maps_key" />
 
         <activity
-            android:name=".MapsActivity"
+            android:name=".MapsActivity.MapsActivity"
             android:label="Your Location"
-            android:parentActivityName=".MainActivity" />
+            android:parentActivityName=".MainActivity.MainActivity" />
         <activity
-            android:name=".AdminLogin"
+            android:name=".AdminActivity.AdminLogin"
             android:label="@string/title_activity_admin_login" />
         <activity
-            android:name=".AdminActivity"
+            android:name=".AdminActivity.AdminActivity"
             android:label="@string/AdminActivity"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".Connection"
+            android:name=".MainActivity.Connection"
             android:label="@string/connection"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".MessageCenterActivity"
+            android:name=".MessageActivity.MessageCenterActivity"
             android:label="@string/messages"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".QuestionActivity"
+            android:name=".QuestionActivity.QuestionActivity"
             android:label="@string/messages"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".LanguageChangeActivity"
+            android:name=".LanguageChangeActivity.LanguageChangeActivity"
             android:label="@string/action_settings"
             android:theme="@style/AppTheme.NoActionBar"/>
 

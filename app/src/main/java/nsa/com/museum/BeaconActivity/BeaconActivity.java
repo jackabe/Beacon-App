@@ -1,45 +1,35 @@
-package nsa.com.museum;
+package nsa.com.museum.BeaconActivity;
 import android.Manifest;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.BitmapShader;
-import java.lang.Object;
-import android.net.Uri;
 import android.os.Build;
-import android.os.Process;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.ListView;
-import android.widget.TextView;
-import android.widget.Toast;
+
 import com.gcell.ibeacon.gcellbeaconscanlibrary.GCellBeaconManagerScanEvents;
 import com.gcell.ibeacon.gcellbeaconscanlibrary.GCellBeaconRegion;
 import com.gcell.ibeacon.gcellbeaconscanlibrary.GCellBeaconScanManager;
 import com.gcell.ibeacon.gcellbeaconscanlibrary.GCelliBeacon;
 
-import org.w3c.dom.Text;
-
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.InterruptedIOException;
-import java.sql.Blob;
 import java.util.ArrayList;
 import java.util.List;
+
+import nsa.com.museum.AdminActivity.AdminLogin;
+import nsa.com.museum.HelpActivity.HelpActivity;
+import nsa.com.museum.HistoryActivity.HistoryActivity;
+import nsa.com.museum.MainActivity.MainActivity;
+import nsa.com.museum.SettingsActivity.NewSettingsActivity;
+import nsa.com.museum.R;
+
 public class BeaconActivity extends AppCompatActivity implements GCellBeaconManagerScanEvents {
     GCellBeaconScanManager scanMan;
     DBBeacon db;

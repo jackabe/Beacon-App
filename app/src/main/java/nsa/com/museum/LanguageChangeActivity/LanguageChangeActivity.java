@@ -1,4 +1,4 @@
-package nsa.com.museum;
+package nsa.com.museum.LanguageChangeActivity;
 
 import android.content.Intent;
 import android.content.res.Configuration;
@@ -11,9 +11,15 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
-import android.widget.EditText;
 
 import java.util.Locale;
+
+import nsa.com.museum.AdminActivity.AdminLogin;
+import nsa.com.museum.HelpActivity.HelpActivity;
+import nsa.com.museum.HistoryActivity.HistoryActivity;
+import nsa.com.museum.MainActivity.MainActivity;
+import nsa.com.museum.R;
+import nsa.com.museum.SettingsActivity.NewSettingsActivity;
 
 public class LanguageChangeActivity extends AppCompatActivity {
 

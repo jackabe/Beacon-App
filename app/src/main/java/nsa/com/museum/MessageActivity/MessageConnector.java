@@ -1,8 +1,10 @@
-package nsa.com.museum;
+package nsa.com.museum.MessageActivity;
 
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+
+import nsa.com.museum.ItemsDBHelper;
 
 public class MessageConnector {
 

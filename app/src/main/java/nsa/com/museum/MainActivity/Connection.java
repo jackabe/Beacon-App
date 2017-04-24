@@ -13,7 +13,7 @@ import nsa.com.museum.R;
 
 public class Connection extends AppCompatActivity {
 
-    Button continueButton;
+    private Button continueButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

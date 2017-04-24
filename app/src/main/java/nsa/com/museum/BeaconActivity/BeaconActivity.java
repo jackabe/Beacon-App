@@ -31,15 +31,14 @@ import nsa.com.museum.SettingsActivity.NewSettingsActivity;
 import nsa.com.museum.R;
 
 public class BeaconActivity extends AppCompatActivity implements GCellBeaconManagerScanEvents {
-    GCellBeaconScanManager scanMan;
-    DBBeacon db;
-
-    CustomBeaconAdapter beaconAdapter;
-    ArrayList<Beacons> beaconsArrayList;
-    Beacons beaconsListItems;
-    ListView lv;
-    String aBeacon;
-    ArrayList<String> beacons;
+    private GCellBeaconScanManager scanMan;
+    private DBBeacon db;
+    private CustomBeaconAdapter beaconAdapter;
+    private ArrayList<Beacons> beaconsArrayList;
+    private  Beacons beaconsListItems;
+    private ListView lv;
+    private String aBeacon;
+    private ArrayList<String> beacons;
 
     int PERM_CODE = 101;
     String[] permissions = new String[]{Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.BLUETOOTH, Manifest.permission.BLUETOOTH_ADMIN};

@@ -11,6 +11,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.Filter;
+import android.widget.Filterable;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -19,16 +21,15 @@ import nsa.com.museum.BeaconActivity.BeaconActivity;
 import nsa.com.museum.MainActivity.Museums;
 import nsa.com.museum.R;
 
-public class CustomListAdapter extends BaseAdapter {
+public class CustomListAdapter extends BaseAdapter implements Filterable{
 
-    Context context;
-    ArrayList<Museums> museumList;
-    ArrayList<Museums> filterList;
-    int open;
-    int close;
-    Calendar time;
-    int currentHour;
-    String museumCity;
+    private Context context;
+    private ArrayList<Museums> museumList;
+    private int open;
+    private int close;
+    private Calendar time;
+    private int currentHour;
+    private String museumCity;
 
     // Code referenced from the source http://androidtuts4u.blogspot.co.uk/2013/02/android-list-view-using-custom-adapter.html.
 
@@ -36,7 +37,6 @@ public class CustomListAdapter extends BaseAdapter {
 
         this.context = context;
         museumList = list;
-        this.filterList = museumList;
     }
 
     @Override
@@ -116,4 +116,8 @@ public class CustomListAdapter extends BaseAdapter {
         return convertView;
     }
 
+    @Override
+    public Filter getFilter() {
+        return null;
+    }
 }

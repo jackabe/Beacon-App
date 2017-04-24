@@ -5,9 +5,9 @@ package nsa.com.museum.HistoryActivity;
  */
 public class History {
 
-    String beaconId;
-    String objectName;
-    String url;
+    private String beaconId;
+    private String objectName;
+    private  String url;
 
     public History() {
 

@@ -19,8 +19,8 @@ import nsa.com.museum.SettingsActivity.NewSettingsActivity;
 
 public class HelpActivity extends AppCompatActivity {
 
-    Button moreHelp;
-    Context context;
+    private Button moreHelp;
+    private Context context;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

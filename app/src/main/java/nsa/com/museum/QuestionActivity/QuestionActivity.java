@@ -20,10 +20,10 @@ import nsa.com.museum.SettingsActivity.NewSettingsActivity;
 
 public class QuestionActivity extends AppCompatActivity {
 
-    EditText questionTitle;
-    EditText questionText;
-    Button submit;
-    MessageConnector db;
+    private EditText questionTitle;
+    private EditText questionText;
+    private Button submit;
+    private MessageConnector db;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

@@ -52,26 +52,26 @@ import nsa.com.museum.R;
 
 public class MainActivity extends AppCompatActivity implements GCellBeaconManagerScanEvents {
 
-    GCellBeaconScanManager scanMan;
-    int dID;
-    DBConnector db;
-    DBBeacon dbBeacon;
-    EditText cityInput;
-    ListView museumsList;
-    Button searchBtn;
-    Button findBtn;
-    CustomListAdapter listAdapter;
-    ArrayList<Museums> museumsArrayList;
-    Museums museumListItems;
-    ArrayList<Beacons> beaconsArrayList;
-    String aBeacon;
-    ArrayList<String> beacons;
-    TextView connection;
-    int counter;
-    InternetConnection internetConnection;
+    private GCellBeaconScanManager scanMan;
+    private int dID;
+    private DBConnector db;
+    private DBBeacon dbBeacon;
+    private EditText cityInput;
+    private ListView museumsList;
+    private Button searchBtn;
+    private Button findBtn;
+    private CustomListAdapter listAdapter;
+    private ArrayList<Museums> museumsArrayList;
+    private Museums museumListItems;
+    private ArrayList<Beacons> beaconsArrayList;
+    private String aBeacon;
+    private ArrayList<String> beacons;
+    private TextView connection;
+    private int counter;
+    private InternetConnection internetConnection;
 
-    int PERM_CODE = 101;
-    String[] permissions = new String[]{Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.BLUETOOTH, Manifest.permission.BLUETOOTH_ADMIN};
+    private int PERM_CODE = 101;
+    private String[] permissions = new String[]{Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.BLUETOOTH, Manifest.permission.BLUETOOTH_ADMIN};
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -81,7 +81,6 @@ public class MainActivity extends AppCompatActivity implements GCellBeaconManage
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         checkPermissions();
-
         // initialise all our fields
         cityInput = (EditText) findViewById(R.id.editSearch);
         dbBeacon = new DBBeacon(this);

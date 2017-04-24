@@ -20,11 +20,11 @@ import nsa.com.museum.R;
 
 public class HistoryActivity extends AppCompatActivity {
 
-    ListView historyLv;
-    DBHistory db;
-    CustomHistoryAdapter historyAdapter;
-    ArrayList<History> historyArrayList;
-    History historyListItems;
+    private ListView historyLv;
+    private DBHistory db;
+    private CustomHistoryAdapter historyAdapter;
+    private ArrayList<History> historyArrayList;
+    private History historyListItems;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

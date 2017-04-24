@@ -12,6 +12,7 @@ import java.net.URL;
  */
 public class ItemsDBHelper extends SQLiteOpenHelper{
 
+    // Code referenced from the source http://androidtuts4u.blogspot.co.uk/2013/02/android-list-view-using-custom-adapter.html.
     public static final String DATABASE_NAME = "museum.db";
     public static final int DATABASE_VERSION = 1;
     public static final String TABLE_MUSEUM_DETAILS = "museumDetails";

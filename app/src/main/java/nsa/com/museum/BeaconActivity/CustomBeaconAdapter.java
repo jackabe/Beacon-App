@@ -29,15 +29,15 @@ import nsa.com.museum.R;
 
 public class CustomBeaconAdapter extends BaseAdapter implements Filterable {
 
-    Context context;
-    ArrayList<Beacons> beaconList;
-    String beacon;
-    Beacons beaconListItems;
-    InternetConnection internetConnection;
-    String beaconId;
-    String beaconName;
-    String url;
-    DBHistory db;
+    private Context context;
+    private ArrayList<Beacons> beaconList;
+    private String beacon;
+    private Beacons beaconListItems;
+    private InternetConnection internetConnection;
+    private String beaconId;
+    private String beaconName;
+    private  String url;
+    private DBHistory db;
 
     // Code referenced from the source http://androidtuts4u.blogspot.co.uk/2013/02/android-list-view-using-custom-adapter.html.
 

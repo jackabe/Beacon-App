@@ -8,10 +8,10 @@ import java.util.Map;
  * Created by c1673107 on 25/03/2017.
  */
 public class Museums {
-    int museumId;
-    String museumCity;
-    int museumOpen;
-    int museumClose;
+    private int museumId;
+    private String museumCity;
+    private int museumOpen;
+    private int museumClose;
 
     public Museums() {
 

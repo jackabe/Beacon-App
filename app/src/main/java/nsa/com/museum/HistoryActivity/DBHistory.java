@@ -7,6 +7,10 @@ import android.database.sqlite.SQLiteDatabase;
 
 import nsa.com.museum.ItemsDBHelper;
 
+/**
+ * Created by c1571078 on 03/04/2017.
+ */
+
 public class DBHistory {
 
     public static final String DATABASE_NAME = "HISTORY_DATABASE";
@@ -23,7 +27,7 @@ public class DBHistory {
         database = db.getWritableDatabase();
     }
 
-    public void executeQuery(String query) {
+    void executeQuery(String query) {
         try {
 
             if (database.isOpen()) {
@@ -40,7 +44,7 @@ public class DBHistory {
 
     }
 
-    public Cursor selectQuery(String query) {
+    Cursor selectQuery(String query) {
         Cursor c1 = null;
         try {
 

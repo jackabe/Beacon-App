@@ -48,6 +48,10 @@ import java.util.List;
 
 import nsa.com.museum.R;
 
+/**
+ * Created by c1571078 on 20/03/2017.
+ */
+
 /**===MAPS FUNCTIONALITY===
  * Adapted using combination of Android Docs, Google Developer and Stack Overflow at the following links.
  * Adding a map with a Marker: https://developers.google.com/maps/documentation/android-api/map-with-marker
@@ -130,7 +134,7 @@ public class MapsActivity extends AppCompatActivity
      *  user's device and the Google services required for this app. I.E.
      *  Google's Location Services.
      */
-    protected synchronized void buildGoogleApiClient() {
+    private synchronized void buildGoogleApiClient() {
         googleApiClient = new GoogleApiClient.Builder(this)
                 .addConnectionCallbacks(this)
                 .addOnConnectionFailedListener(this)
@@ -167,15 +171,15 @@ public class MapsActivity extends AppCompatActivity
     // Called when the user's location has changed.
     @Override
     public void onLocationChanged(Location location) {
-        lastLocation = location;
+        this.lastLocation = location;
         // Removes current marker if it exists as it is no longer accurate.
         if (currentLocationMarker != null) {
             currentLocationMarker.remove();
         }
 
         //Places a new current location marker in the new position.
-        latitude = location.getLatitude();
-        longitude = location.getLongitude();
+        latitude = lastLocation.getLatitude();
+        longitude = lastLocation.getLongitude();
         latLng = new LatLng(latitude, longitude);
         MarkerOptions markerOptions = new MarkerOptions();
         markerOptions.position(latLng);
@@ -195,7 +199,7 @@ public class MapsActivity extends AppCompatActivity
     }
 
     // Checks for location permissions required to run this section of the app.
-    public static final int MY_PERMISSIONS_REQUEST_LOCATION = 200;
+    private static final int MY_PERMISSIONS_REQUEST_LOCATION = 200;
     private void checkLocationPermission() {
         if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION)
                 != PackageManager.PERMISSION_GRANTED) {
@@ -255,7 +259,6 @@ public class MapsActivity extends AppCompatActivity
                     // Permission was denied, so the user is presented with a toast. Maps will not work.
                     Toast.makeText(this, "Sorry, permission denied.", Toast.LENGTH_LONG).show();
                 }
-                return;
             }
         }
     }
@@ -264,7 +267,7 @@ public class MapsActivity extends AppCompatActivity
      *  places to the current location. The below filter defines that all
      *  museums within 20km of the current location must be shown on the map.
      */
-    public StringBuilder sbMethod() throws SecurityException {
+    private StringBuilder sbMethod() throws SecurityException {
         StringBuilder sb = new StringBuilder("https://maps.googleapis.com/maps/api/place/nearbysearch/json?");
         sb.append("location=" + latitude + "," + longitude);
         sb.append("&radius=20000");
@@ -280,8 +283,7 @@ public class MapsActivity extends AppCompatActivity
     /** All below methods until end of file referenced from:
      * http://stackoverflow.com/questions/33971717/mapactivity-query-for-nearest-hospital-restaurant-not-working?noredirect=1&lq=1
      */
-    private class PlacesTask extends AsyncTask<String, Integer, String>
-    {
+    private class PlacesTask extends AsyncTask<String, Integer, String> {
 
         String data = null;
 
@@ -307,8 +309,7 @@ public class MapsActivity extends AppCompatActivity
         }
     }
 
-    private String downloadUrl(String strUrl) throws IOException
-    {
+    private String downloadUrl(String strUrl) throws IOException {
         String data = "";
         InputStream iStream = null;
         HttpURLConnection urlConnection = null;
@@ -425,10 +426,10 @@ public class MapsActivity extends AppCompatActivity
             }
         }
     }
-    public class Place_JSON {
+    private class Place_JSON {
 
         // Receives a JSONObject and returns a list
-        public List<HashMap<String, String>> parse(JSONObject jObject) {
+        private List<HashMap<String, String>> parse(JSONObject jObject) {
 
             JSONArray jPlaces = null;
             try {
@@ -446,7 +447,7 @@ public class MapsActivity extends AppCompatActivity
         private List<HashMap<String, String>> getPlaces(JSONArray jPlaces) {
             int placesCount = jPlaces.length();
             List<HashMap<String, String>> placesList = new ArrayList<HashMap<String, String>>();
-            HashMap<String, String> place = null;
+            HashMap<String, String> place;
 
             // Taking each place, parses and adds to list object */
             for (int i = 0; i < placesCount; i++) {
@@ -462,8 +463,7 @@ public class MapsActivity extends AppCompatActivity
         }
 
         //Parsing the Place JSON object
-        private HashMap<String, String> getPlace(JSONObject jPlace)
-        {
+        private HashMap<String, String> getPlace(JSONObject jPlace) {
 
             HashMap<String, String> place = new HashMap<String, String>();
             String placeName = "-NA-";

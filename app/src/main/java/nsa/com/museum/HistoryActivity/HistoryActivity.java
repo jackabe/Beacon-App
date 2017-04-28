@@ -18,13 +18,17 @@ import nsa.com.museum.MainActivity.MainActivity;
 import nsa.com.museum.SettingsActivity.NewSettingsActivity;
 import nsa.com.museum.R;
 
+/**
+ * Created by c1571078 on 03/04/2017.
+ */
+
 public class HistoryActivity extends AppCompatActivity {
 
-    private ListView historyLv;
-    private DBHistory db;
-    private CustomHistoryAdapter historyAdapter;
-    private ArrayList<History> historyArrayList;
-    private History historyListItems;
+    ListView historyLv;
+    DBHistory db;
+    CustomHistoryAdapter historyAdapter;
+    ArrayList<History> historyArrayList;
+    History historyListItems;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,7 +65,7 @@ public class HistoryActivity extends AppCompatActivity {
                     HistoryActivity.this, historyArrayList);
             historyLv.setAdapter(historyAdapter);
 
-                } while (c1.moveToNext());
+        } while (c1.moveToNext());
 
         c1.close();
     }

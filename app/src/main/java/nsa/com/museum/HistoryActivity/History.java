@@ -7,7 +7,7 @@ public class History {
 
     private String beaconId;
     private String objectName;
-    private  String url;
+    private String url;
 
     public History() {
 
@@ -36,5 +36,4 @@ public class History {
     public void setUrl(String url) {
         this.url = url;
     }
-
 }
